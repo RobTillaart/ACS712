@@ -2,18 +2,16 @@
 //
 //    FILE: ACS712.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 //    DATE: 2020-03-17
 // PURPOSE: ACS712 library - current measurement
-//
-// Released to the public domain
 //
 // Tested with a RobotDyn ACS712 20A breakout + UNO.
 //
 
 #include "Arduino.h"
 
-#define ACS712_LIB_VERSION "0.1.2"
+#define ACS712_LIB_VERSION "0.1.3"
 
 
 class ACS712

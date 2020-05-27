@@ -1,7 +1,7 @@
 //
 //    FILE: ACS712.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 //    DATE: 2020-03-17
 // PURPOSE: ACS712 library - current measurement
 //
@@ -9,8 +9,7 @@
 // 0.1.0    2020-03-17 initial version
 // 0.1.1    2020-03-18 first release version
 // 0.1.2	2020-03-21 automatic formfactor test
-//
-// Released to the public domain
+// 0.1.3    2020-05-27 fix library.json
 //
 
 #include "ACS712.h"
