@@ -46,6 +46,10 @@ class ACS712
     inline void     setFormFactor(float ff) { _formFactor = ff; };
     inline float    getFormFactor() { return _formFactor; };
 
+    // noise
+    inline void     setNoise(uint8_t noise) { _noise = noise; };
+    inline uint8_t  getNoise() { return _noise; };
+
     // AC and DC
     inline void     setmVperAmp(uint8_t mva) { _mVperAmpere = mva; };
     inline uint8_t  getmVperAmp() { return _mVperAmpere; };
@@ -56,6 +60,7 @@ class ACS712
     float     _formFactor;    // P2P -> RMS
     uint8_t   _mVperAmpere;
     uint16_t  _midPoint;
+    uint8_t   _noise;
 };
 
 // END OF FILE
