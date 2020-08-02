@@ -36,6 +36,10 @@ class ACS712
     // blocks < 1 ms
     int        mA_DC();
 
+    // Auto configure, assuming zero current
+    // Take readings for the allotted time, infer midpoint and noise
+    void autoConfigure(uint16_t timeMillis = 200, float extraNoisemV=5);
+
     // midpoint ADC for DC only
     inline void setMidPoint(uint16_t mp) { _midPoint = mp; };
     inline uint16_t getMidPoint() { return _midPoint; };
