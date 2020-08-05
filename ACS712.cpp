@@ -11,7 +11,7 @@
 // 0.1.2	2020-03-21 automatic formfactor test
 // 0.1.3    2020-05-27 fix library.json
 // 0.1.4    2020-08-02 Allow for faster processors
-// 0.2.0    2020-08-02 Add autoConfigure
+// 0.2.0    2020-08-02 Add autoMidPoint
 
 #include "ACS712.h"
 
@@ -23,7 +23,7 @@ ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, uint8_t mVperA)
     _mVperAmpere = mVperA;
     _formFactor = 0.70710678119;  // 0.5 * sqrt(2);  TODO: should be smaller in practice 0.5 ?
     _midPoint = maxADC / 2;
-    _noise = 21 / _mVpstep; // Noise is 21mV according to datasheet
+    _noisemV = 21; // Noise is 21mV according to datasheet
 }
 
 int ACS712::mA_AC(uint8_t freq)
@@ -40,7 +40,7 @@ int ACS712::mA_AC(uint8_t freq)
         int val = analogRead(_pin);
         if (val < _min) _min = val;
         if (val > _max) _max = val;
-        if (abs(val - _midPoint) < _noise) zeros++;   // Noise max 4 during test
+        if (abs(val - _midPoint) <= (_noisemV/_mVpstep)) zeros++;
     }
     int p2p = (_max - _min);
 
@@ -72,18 +72,17 @@ int ACS712::mA_DC()
 }
 
 // configure by sampling for a period of time, assuming that no current is flowing
-void ACS712::autoConfigure(uint16_t timeMillis, float extraNoisemV)
+void ACS712::autoMidPoint(uint16_t timeMillis)
 {
-  uint32_t startTime=millis();
-  uint16_t minValue = analogRead(_pin);
-  uint16_t maxValue = minValue;
+  uint32_t startTime = millis();
+  uint32_t total = 0;
+  uint32_t samples = 1;
   while (millis() - startTime < timeMillis) {
     uint16_t reading = analogRead(_pin);
-    if (reading > maxValue) maxValue = reading;
-    if (reading < minValue) minValue = reading;
+    total += reading;
+    samples ++;
   }
-  _midPoint = (minValue + maxValue) / 2;
-  _noise = (maxValue - minValue) / 2 + extraNoisemV / _mVpstep ;
+  _midPoint = total / samples;
 }
 
 // END OF FILE
