@@ -2,8 +2,8 @@
 //
 //    FILE: ACS712.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.3
-//    DATE: 2020-03-17
+// VERSION: 0.2.0
+//    DATE: 2020-08-02
 // PURPOSE: ACS712 library - current measurement
 //
 // Tested with a RobotDyn ACS712 20A breakout + UNO.
@@ -41,14 +41,16 @@ class ACS712
     inline uint16_t getMidPoint() { return _midPoint; };
     inline void     incMidPoint() { _midPoint++; };
     inline void     decMidPoint() { _midPoint--; };
+    // Auto midPoint, assuming zero DC current or any AC current
+    void autoMidPoint(uint8_t freq = 50);
 
     // also known as crest factor;  affects AC only
     inline void     setFormFactor(float ff) { _formFactor = ff; };
     inline float    getFormFactor() { return _formFactor; };
 
     // noise
-    inline void     setNoise(uint8_t noise) { _noise = noise; };
-    inline uint8_t  getNoise() { return _noise; };
+    inline void     setNoisemV(uint8_t noisemV) { _noisemV = noisemV; };
+    inline uint8_t  getNoisemV() { return _noisemV; };
 
     // AC and DC
     inline void     setmVperAmp(uint8_t mva) { _mVperAmpere = mva; };
@@ -60,7 +62,7 @@ class ACS712
     float     _formFactor;    // P2P -> RMS
     uint8_t   _mVperAmpere;
     uint16_t  _midPoint;
-    uint8_t   _noise;
+    uint8_t   _noisemV;
 };
 
 // END OF FILE
