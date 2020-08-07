@@ -41,9 +41,8 @@ class ACS712
     inline uint16_t getMidPoint() { return _midPoint; };
     inline void     incMidPoint() { _midPoint++; };
     inline void     decMidPoint() { _midPoint--; };
-    // Auto midPoint, assuming zero DC current or AC current
-    // Take readings for the allotted time, infer midpoint
-    void autoMidPoint(uint16_t timeMillis = 40);
+    // Auto midPoint, assuming zero DC current or any AC current
+    void autoMidPoint(uint8_t freq = 50);
 
     // also known as crest factor;  affects AC only
     inline void     setFormFactor(float ff) { _formFactor = ff; };
