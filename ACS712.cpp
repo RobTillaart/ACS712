@@ -71,13 +71,16 @@ int ACS712::mA_DC()
     return 1000.0 * steps * _mVpstep / _mVperAmpere;
 }
 
-// configure by sampling for a period of time, assuming that no current is flowing
+// configure by sampling for a period of time, assuming that no DC current is flowing
 void ACS712::autoMidPoint(uint16_t timeMillis)
 {
   uint32_t startTime = millis();
   uint32_t total = 0;
-  uint32_t samples = 1;
-  while (millis() - startTime < timeMillis) {
+  uint32_t samples = 0;
+  // Ensure at least 2 cycles of AC (we're going to ignore 60hz vs. 50hz and just use the longer time period)
+  timeMillis = constrain(timeMillis, 40, 0xffff);
+  // Stop if we're in danger of overflow
+  while ((millis() - startTime < timeMillis) && (total < 0xFFFF0000)) {
     uint16_t reading = analogRead(_pin);
     total += reading;
     samples ++;
