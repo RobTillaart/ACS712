@@ -59,8 +59,8 @@ unittest(test_midPoint)
   assertEqual(0, amp50);
 
   ACS.autoMidPoint(60);
-  float amp50 = ACS.getMidPoint();
-  assertEqual(0, amp50);
+  float amp60 = ACS.getMidPoint();
+  assertEqual(0, amp60);
 
   ACS.setMidPoint(1000);
   float amp = ACS.getMidPoint();
@@ -85,7 +85,7 @@ unittest(test_formFactor)
   float eff = 0.5 * sqrt(2);
   float delta = abs(eff - ff);
   assertLessOrEqual(0.000001, delta);
-  
+
   ACS.setFormFactor(0.8);
   ff = ACS.getFormFactor();
   eff = 0.8;
