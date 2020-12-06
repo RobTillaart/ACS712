@@ -95,8 +95,6 @@ unittest(test_formFactor)
   eff = 0.8;
   delta = abs(eff - ff);
   assertMoreOrEqual(0.0001, delta);
-
-  assertEqual(1, 1);
 }
 
 unittest(test_Noise)
