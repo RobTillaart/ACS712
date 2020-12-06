@@ -79,7 +79,6 @@ unittest(test_midPoint)
   amp = ACS.getMidPoint();
   assertEqual(1000, amp);
 }
-*/
 
 unittest(test_formFactor)
 {
