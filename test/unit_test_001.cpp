@@ -26,6 +26,7 @@
 #include "Arduino.h"
 #include "ACS712.h"
 
+#define A0      0
 
 unittest_setup()
 {
