@@ -88,13 +88,13 @@ unittest(test_formFactor)
   float ff = ACS.getFormFactor();
   float eff = 0.5 * sqrt(2);
   float delta = abs(eff - ff);
-  assertLessOrEqual(0.000001, delta);
+  assertGreatersOrEqual(0.0001, delta);
 
   ACS.setFormFactor(0.8);
   ff = ACS.getFormFactor();
   eff = 0.8;
   delta = abs(eff - ff);
-  assertLessOrEqual(0.000001, delta);
+  assertGreatersOrEqual(0.0001, delta);
 
   assertEqual(1, 1);
 }
