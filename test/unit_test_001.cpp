@@ -37,19 +37,38 @@ unittest_teardown()
 }
 
 
-unittest(test_mA)
+unittest(test_mA_DC)
 {
   GodmodeState* state = GODMODE();
   state->reset();
 
-  int future[6] = {0, 0, 0, 0, 0, 0};
-  state->analogPin[1].fromArray(future, 6);
-
-  ACS712  ACS(0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
+  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
   // assertEqual(0, ACS.mA_AC(50));
   // assertEqual(0, ACS.mA_AC(60));
+  int future[6] = {0, 100, 200, 511, 900, 1023};
+  state->analogPin[1].fromArray(future, 6);
+
+  assertEqual(-24975, ACS.mA_DC());
   assertEqual(0, ACS.mA_DC());
+  assertEqual(0, ACS.mA_DC());
+  assertEqual(0, ACS.mA_DC());
+  assertEqual(0, ACS.mA_DC());
+  assertEqual(0, ACS.mA_DC());
+}
+
+
+unittest(test_mA_AC)
+{
+  GodmodeState* state = GODMODE();
+  state->reset();
+
+  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
+
+  // loop with micros and a lot of analogReads - not possible
+  // assertEqual(0, ACS.mA_AC(50));
+  // assertEqual(0, ACS.mA_AC(60));
+  assertEqual(1, 1);
 }
 
 unittest(test_midPoint)
