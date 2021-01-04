@@ -39,18 +39,21 @@ unittest_teardown()
 
 unittest(test_mA)
 {
-  ACS712  ACS(A0, 5.0, 1023, 100); // analogPin, volts, maxADC, mVperA
+  GodmodeState* state = GODMODE();
+  state->reset();
 
-/*
-  float maac50 = ACS.mA_AC(50);
-  assertEqual(0, maac50);
+  int future[6] = {0, 0, 0, 0, 0, 0};
+  state->analogPin[1].fromArray(future, 6);
+  for (int i = 0; i < 6; ++i)
+  {
+    assertEqual(future[i], analogRead(1));
+  }
 
-  float maac60 = ACS.mA_AC(60);
-  assertEqual(0, maac60);
+  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
-  float madc = ACS.mA_DC();
-  assertEqual(0, madc);
-  */
+  // assertEqual(0, ACS.mA_AC(50));
+  // assertEqual(0, ACS.mA_AC(60));
+  assertEqual(0, ACS.mA_DC());
 }
 
 unittest(test_midPoint)
