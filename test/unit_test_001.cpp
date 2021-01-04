@@ -37,35 +37,50 @@ unittest_teardown()
 }
 
 
-unittest(test_mA)
+unittest(test_mA_DC)
 {
-  ACS712  ACS(A0, 5.0, 1023, 100); // analogPin, volts, maxADC, mVperA
+  GodmodeState* state = GODMODE();
+  state->reset();
 
-/*
-  float maac50 = ACS.mA_AC(50);
-  assertEqual(0, maac50);
+  //  0 == A0
+  ACS712  ACS(0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
-  float maac60 = ACS.mA_AC(60);
-  assertEqual(0, maac60);
+  // assertEqual(0, ACS.mA_AC(50));
+  // assertEqual(0, ACS.mA_AC(60));
+  int future[12] = {0, 0, 100, 100, 200, 200, 511, 511, 900, 900, 1023, 1023};
+  state->analogPin[0].fromArray(future, 12);
 
-  float madc = ACS.mA_DC();
-  assertEqual(0, madc);
-  */
+  assertEqual(-24975, ACS.mA_DC());
+  assertEqual(-20087, ACS.mA_DC());
+  assertEqual(-15200, ACS.mA_DC());
+  assertEqual(0, ACS.mA_DC());
+  assertEqual(19012, ACS.mA_DC());
+  assertEqual(25024, ACS.mA_DC());
+}
+
+
+unittest(test_mA_AC)
+{
+  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
+
+  // loop with micros and a lot of analogReads - not possible
+  // assertEqual(0, ACS.mA_AC(50));
+  // assertEqual(0, ACS.mA_AC(60));
+  assertEqual(1, 1);
 }
 
 unittest(test_midPoint)
 {
   ACS712  ACS(A0, 5.0, 1023, 100); // analogPin, volts, maxADC, mVperA
 
-/*
-  ACS.autoMidPoint(50);
-  float amp50 = ACS.getMidPoint();
-  assertEqual(0, amp50);
-
-  ACS.autoMidPoint(60);
-  float amp60 = ACS.getMidPoint();
-  assertEqual(0, amp60);
-*/
+  // loop with micros and a lot of analogReads - not possible
+  // ACS.autoMidPoint(50);
+  // float amp50 = ACS.getMidPoint();
+  // assertEqual(0, amp50);
+  // 
+  // ACS.autoMidPoint(60);
+  // float amp60 = ACS.getMidPoint();
+  // assertEqual(0, amp60);
 
   ACS.setMidPoint(1000);
   float amp = ACS.getMidPoint();
