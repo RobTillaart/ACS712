@@ -49,7 +49,7 @@ unittest(test_mA)
     assertEqual(future[i], analogRead(1));
   }
 
-  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
+  ACS712  ACS(0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
   // assertEqual(0, ACS.mA_AC(50));
   // assertEqual(0, ACS.mA_AC(60));
