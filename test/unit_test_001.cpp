@@ -44,10 +44,6 @@ unittest(test_mA)
 
   int future[6] = {0, 0, 0, 0, 0, 0};
   state->analogPin[1].fromArray(future, 6);
-  for (int i = 0; i < 6; ++i)
-  {
-    assertEqual(future[i], analogRead(1));
-  }
 
   ACS712  ACS(0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
