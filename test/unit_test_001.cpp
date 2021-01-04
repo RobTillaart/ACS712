@@ -42,7 +42,8 @@ unittest(test_mA_DC)
   GodmodeState* state = GODMODE();
   state->reset();
 
-  ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
+  //  0 == A0
+  ACS712  ACS(0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
   // assertEqual(0, ACS.mA_AC(50));
   // assertEqual(0, ACS.mA_AC(60));
@@ -75,15 +76,14 @@ unittest(test_midPoint)
 {
   ACS712  ACS(A0, 5.0, 1023, 100); // analogPin, volts, maxADC, mVperA
 
-/*
-  ACS.autoMidPoint(50);
-  float amp50 = ACS.getMidPoint();
-  assertEqual(0, amp50);
-
-  ACS.autoMidPoint(60);
-  float amp60 = ACS.getMidPoint();
-  assertEqual(0, amp60);
-*/
+  // loop with micros and a lot of analogReads - not possible
+  // ACS.autoMidPoint(50);
+  // float amp50 = ACS.getMidPoint();
+  // assertEqual(0, amp50);
+  // 
+  // ACS.autoMidPoint(60);
+  // float amp60 = ACS.getMidPoint();
+  // assertEqual(0, amp60);
 
   ACS.setMidPoint(1000);
   float amp = ACS.getMidPoint();
