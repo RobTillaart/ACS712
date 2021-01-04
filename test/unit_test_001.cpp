@@ -51,19 +51,16 @@ unittest(test_mA_DC)
   state->analogPin[0].fromArray(future, 12);
 
   assertEqual(-24975, ACS.mA_DC());
+  assertEqual(-20087, ACS.mA_DC());
+  assertEqual(-15200, ACS.mA_DC());
   assertEqual(0, ACS.mA_DC());
-  assertEqual(0, ACS.mA_DC());
-  assertEqual(0, ACS.mA_DC());
-  assertEqual(0, ACS.mA_DC());
-  assertEqual(0, ACS.mA_DC());
+  assertEqual(19012, ACS.mA_DC());
+  assertEqual(25024, ACS.mA_DC());
 }
 
 
 unittest(test_mA_AC)
 {
-  GodmodeState* state = GODMODE();
-  state->reset();
-
   ACS712  ACS(A0, 5.0, 1023, 100);  // analogPin, volts, maxADC, mVperA
 
   // loop with micros and a lot of analogReads - not possible
