@@ -47,8 +47,8 @@ unittest(test_mA_DC)
 
   // assertEqual(0, ACS.mA_AC(50));
   // assertEqual(0, ACS.mA_AC(60));
-  int future[6] = {0, 100, 200, 511, 900, 1023};
-  state->analogPin[0].fromArray(future, 6);
+  int future[6] = {0, 0, 100, 100, 200, 200, 511, 511, 900, 900, 1023, 1023};
+  state->analogPin[0].fromArray(future, 12);
 
   assertEqual(-24975, ACS.mA_DC());
   assertEqual(0, ACS.mA_DC());
