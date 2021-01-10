@@ -5,7 +5,8 @@
 
 # ACS712
 
-Current Sensor - 5A, 20A, 30A
+Library for the ACS712 Current Sensor - 5A, 20A, 30A
+
 
 ## Description
 
@@ -25,34 +26,43 @@ peak to peak value which is converted to the RMS value. To convert the peak2peak
 value to RMS one need the so called crest or form factor. This factor depends heavily
 on the signal form. For a perfect sinus the value is sqrt(2)/2.
 
+
 ## Interface
 
 #### Base
+
 - **ACS712(analogPin, volts = 5.0, maxADC = 1023, mVperA = 100)** constructor
 - **mA_AC(freq = 50)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
 - **mA_DC()** 
 
 #### Midpoint
+
 - **setMidPoint(mp)** sets midpoint ADC for DC only
 - **autoMidPoint(uint8_t freq = 50)** Auto midPoint, assuming zero DC current or any AC current
 - **getMidPoint()** read back setting
-- **incMidPoint()** manual adjust
-- **decMidPoint()** manual adjust
+- **incMidPoint()** manual increase midpoint (manually)
+- **decMidPoint()** manual decrease midpoint (manually)
+
 
 #### Formfactor 
-Also known as crest factor;  affects AC only. Default = 0.5 * sqrt(2) ~ 0.707...
+
+Also known as crest factor;  affects AC only. 
+Default = 0.5 \* sqrt(2) = ~0.70710678...
+
 - **setFormFactor(ff)** manually sets formfactor  0.0 .. 1.0
 - **getFormFactor()** returns current formFactor
 
 #### Noise
+
 Default = 21 mV.
-- **setNoisemV(noisemV)**
-- **getNoisemV()**
+- **setNoisemV(noisemV)** set noise level 
+- **getNoisemV()** returns set value
 
 #### mV per Ampere
+
 Both for AC and DC
-- **setmVperAmp(mva)**
-- **getmVperAmp()**
+- **setmVperAmp(mva)** sets the milliVolt per Ampere measured.
+- **getmVperAmp()** returns set value.
 
 
 ## Test
@@ -79,6 +89,7 @@ get and set the noise in mV.
 The examples show the basic working of the functions.
 
 ## Future
+
 - mA_AC blocks 20 ms so might affect taskscheduling on a ESP32.
 This needs to be investigated.
 - int point2point(uint8_t freq) function for AC. Is part of mA_AC() allready.
