@@ -15,6 +15,7 @@
 //  0.2.1  2020-12-06  Add Arduino-CI + readme + unit test + refactor
 //  0.2.2  2021-06-23  support for more frequencies.
 //  0.2.3  2021-10-15  changed frequencies to float, for optimal tuning.
+//                     updated build CI, readme.md
 
 
 #include "ACS712.h"
@@ -40,7 +41,7 @@ int ACS712::mA_AC(float freq)
   int _min, _max;
   _min = _max = analogRead(_pin);
 
-  // remove expensive float operation from loop.
+  //  remove expensive float operation from loop.
   uint16_t zeroLevel = round(_noisemV/_mVpstep);
 
   uint32_t start = micros();
@@ -76,15 +77,16 @@ int ACS712::mA_AC(float freq)
 
 int ACS712::mA_DC()
 {
-  // read twice to stabilize...
+  //  read twice to stabilize the ADC
   analogRead(_pin);
   int steps = analogRead(_pin) - _midPoint;
   return 1000.0 * steps * _mVpstep / _mVperAmpere;
 }
 
 
-// configure by sampling for 2 cycles of AC
-// Also works for DC as long as no current flowing
+//  configure by sampling for 2 cycles of AC
+//  Also works for DC as long as no current flowing
+//  note this is blocking!
 void ACS712::autoMidPoint(float freq)
 {
   uint16_t twoPeriods = round(2000000UL / freq);
