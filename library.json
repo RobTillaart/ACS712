@@ -24,5 +24,6 @@
   "version": "0.2.3",
   "license": "MIT",
   "frameworks": "arduino",
-  "platforms": "*"
+  "platforms": "*",
+  "headers": "ACS712.h"
 }
