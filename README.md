@@ -6,10 +6,9 @@
 
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/ACS712.svg?maxAge=3600)](https://github.com/RobTillaart/ACS712/releases)
 [![Commits since latest](https://img.shields.io/github/commits-since/RobTillaart/ACS712/latest)](https://github.com/RobTillaart/ACS712/commits/master)
+![GitHub issues](https://img.shields.io/github/issues-raw/RobTillaart/RunningAverage)
 
-[![GitHub file size in bytes](https://img.shields.io/github/size/RobTIllaart/ACS712/ )]
-
-[![downloads] (https://img.shields.io/github/downloads/RobTillaart/Arduino/total ) ] ( https://github.com/RobTillaart/ACS712/ )
+![GitHub all releases](https://img.shields.io/github/downloads/RobTillaart/ACS712/total)
 
 
 # ACS712
