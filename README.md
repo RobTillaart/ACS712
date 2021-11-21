@@ -9,6 +9,7 @@
 
 [![GitHub file size in bytes](https://img.shields.io/github/size/RobTIllaart/ACS712/ )]
 
+https://img.shields.io/github/downloads/RobTillaart/Arduino/total
 
 
 # ACS712
