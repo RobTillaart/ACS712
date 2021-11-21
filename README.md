@@ -7,7 +7,7 @@
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/ACS712.svg?maxAge=3600)](https://github.com/RobTillaart/ACS712/releases)
 [![Commits since latest](https://img.shields.io/github/commits-since/RobTillaart/ACS712/latest)](https://github.com/RobTillaart/ACS712/commits/master)
 
-[![GitHub file size in bytes](https://img.shields.io/github/size/RobTIllaart/ACS712)] (https://github.com/RobTillaart/ACS712)
+[![GitHub file size in bytes](https://img.shields.io/github/size/RobTIllaart/ACS712/ )] (https://github.com/RobTillaart/ACS712)
 
 
 # ACS712
