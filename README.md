@@ -4,6 +4,7 @@
 [![JSON check](https://github.com/RobTillaart/ACS712/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/ACS712/actions/workflows/jsoncheck.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/ACS712/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/ACS712.svg?maxAge=3600)](https://github.com/RobTillaart/ACS712/releases)
+[![Commits since latest](https://img.shields.io/github/commits-since/RobTillaart/ACS712/latest)](https://github.com/RobTillaart/ACS712/commits/master)
 
 
 # ACS712
@@ -35,9 +36,11 @@ on the signal form. For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 
 #### Base
 
-- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, uint8_t mVperA = 100)** constructor. It defaults a 20 A type sensor, which is defined by the default value of mVperA. See below.
+- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, uint8_t mVperA = 100)** constructor. 
+It defaults a 20 A type sensor, which is defined by the default value of mVperA. See below.
 - **int mA_AC(float freq = 50)** blocks ~21 ms (depending on the freq) to sample a whole 50 or 60 Hz period.  
-Since version 0.2.2 frequencies other integer values than 50 and 60 are supported, the lower the frequency, the longer the blocking period.
+Since version 0.2.2 frequencies other integer values than 50 and 60 are supported, the lower the frequency, 
+the longer the blocking period.
 Since version 0.2.3 floating point frequencies are supported to tune optimally.
 - **int mA_DC()** blocks < 1 ms as it just needs one **analogRead()**.
 
@@ -52,7 +55,8 @@ Since version 0.2.3 floating point frequencies are supported to tune optimally.
 #### Midpoint
 
 - **void setMidPoint(uint16_t mp)** sets midpoint for the ADC conversion.
-- **void autoMidPoint(float freq = 50)** Auto midPoint, assuming zero DC current or any AC current. Note it will block for 2 periods. Since version 0.2.2 frequencies other than 50 and 60 are supported.
+- **void autoMidPoint(float freq = 50)** Auto midPoint, assuming zero DC current or any AC current. 
+Note it will block for 2 periods. Since version 0.2.2 frequencies other than 50 and 60 are supported.
 By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly getting a better average.
 - **uint16_t getMidPoint()** read the value set / determined.
 - **void incMidPoint()** manual increase midpoint, e.g. useful to manually adjust the midPoint in an interactive application.
