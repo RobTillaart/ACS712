@@ -6,8 +6,6 @@
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/ACS712.svg?maxAge=3600)](https://github.com/RobTillaart/ACS712/releases)
 
 [![Commits since latest](https://img.shields.io/github/commits-since/RobTillaart/ACS712/latest)](https://github.com/RobTillaart/ACS712/commits/master)
-![GitHub last commit](https://img.shields.io/github/last-commit/RobTillaart/ACS712)
-![GitHub issues](https://img.shields.io/github/issues-raw/RobTillaart/ACS712)
 
 
 # ACS712
@@ -66,7 +64,7 @@ By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly 
 - **void decMidPoint()** manual decrease midpoint.
 
 
-#### Formfactor 
+#### Form factor 
 
 Also known as crest factor;  affects AC signals only. 
 
@@ -103,6 +101,15 @@ Both for AC and DC. Is defined in the constructor and depends on
 - **uint8_t getmVperAmp()** returns the set value.
 
 Typical values see constructor above.
+
+
+#### Experimental
+
+- **float detectFrequency(float minFreq = 40)** Detect the frequency of the AC signal.
+The minimum frequency is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals.
+Thereafter the signal is sampled 10 cycles to get minimize variation of the frequency. Current version is not performance optimized. 
+
+Note: current code contains a correction factor for the timing.
 
 
 ## Test

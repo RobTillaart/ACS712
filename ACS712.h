@@ -1,8 +1,8 @@
 #pragma once
 //
 //    FILE: ACS712.h
-//  AUTHOR: Rob Tillaart
-// VERSION: 0.2.3
+//  AUTHOR: Rob Tillaart, Pete Thompson
+// VERSION: 0.2.4
 //    DATE: 2020-08-02
 // PURPOSE: ACS712 library - current measurement
 //
@@ -12,7 +12,7 @@
 
 #include "Arduino.h"
 
-#define ACS712_LIB_VERSION        (F("0.2.3"))
+#define ACS712_LIB_VERSION        (F("0.2.4"))
 
 
 //  ACS712_FF_SINUS == 1.0/sqrt(2) == 0.5 * sqrt(2)
@@ -71,6 +71,10 @@ class ACS712
     // AC and DC
     inline void     setmVperAmp(uint8_t mva) { _mVperAmpere = mva; };
     inline uint8_t  getmVperAmp() { return _mVperAmpere; };
+
+
+    // Experimental
+    float           detectFrequency(float minFreq = 40);
 
 
   private:
