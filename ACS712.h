@@ -73,8 +73,11 @@ class ACS712
     inline uint8_t  getmVperAmp() { return _mVperAmpere; };
 
 
-    // Experimental
-    float           detectFrequency(float minFreq = 40);
+    // Experimental frequency detection.
+    // the minimal frequency determines the time to sample.
+    float           detectFrequency(float mininmalFrequency = 40);
+    void            setMicrosAdjust(float value = 1.0) { _microsAdjust = value; };
+    float           getMicrosAdjust() { return _microsAdjust; };
 
 
   private:
@@ -84,6 +87,7 @@ class ACS712
     uint8_t   _mVperAmpere;
     uint16_t  _midPoint;
     uint8_t   _noisemV;
+    float     _microsAdjust = 1.0;  // 0.9986
 };
 
 // -- END OF FILE --

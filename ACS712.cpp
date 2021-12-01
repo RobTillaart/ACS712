@@ -109,14 +109,14 @@ void ACS712::autoMidPoint(float freq)
 
 //  Experimental frequency detection.
 //  uses oversampling and averaging to minimize variation
-float ACS712::detectFrequency(float minFreq)
+float ACS712::detectFrequency(float mininmalFrequency)
 {
   uint16_t maximum = 0;
   uint16_t minimum = 0;
   maximum = minimum = analogRead(_pin);
 
   //  determine maxima
-  uint32_t sampleTime = round(1000000.0 / minFreq);
+  uint32_t sampleTime = round(1000000.0 / mininmalFrequency);
   uint32_t start = micros();
   while (micros() - start < sampleTime)
   {
@@ -125,12 +125,13 @@ float ACS712::detectFrequency(float minFreq)
     if (value < minimum) minimum = value;
   }
 
-  //  calculate quantile points
-  //  using q.p. is less noise prone than 1 midpoint
+  //  calculate quarter points
+  //  using quarter points is less noise prone than using one single midpoint
   uint16_t Q1 = (3 * minimum + maximum ) / 4;
   uint16_t Q3 = (minimum + 3 * maximum ) / 4;
 
   // 10x passing Quantile points
+  // wait for the right moment to start
   while (analogRead(_pin) > Q1);
   while (analogRead(_pin) <= Q3);
   start = micros();
@@ -144,7 +145,8 @@ float ACS712::detectFrequency(float minFreq)
   //  calculate frequency
   float wavelength = stop - start;
   float frequency = 1e7 / wavelength;
-  return frequency * 0.9986;  // CPU timing correction factor.
+  if (_microsAdjust != 1.0) frequency *= _microsAdjust;
+  return frequency;
 }
 
 

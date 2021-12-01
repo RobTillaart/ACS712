@@ -106,10 +106,16 @@ Typical values see constructor above.
 #### Experimental
 
 - **float detectFrequency(float minFreq = 40)** Detect the frequency of the AC signal.
-The minimum frequency is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals.
-Thereafter the signal is sampled 10 cycles to get minimize variation of the frequency. Current version is not performance optimized. 
+- **void setMicrosAdjust(float value = 1.0)** adjusts the timing of micros in **detectFrequency()**.
+Values are typical around 1.0 ± 1%
+- **float getMicrosAdjust()** returns the set value. 
 
-Note: current code contains a correction factor for the timing.
+The minimum frequency of 40 Hz is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals. 
+Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency. 
+Current version is not performance optimized. 
+The **microsAdjust()** is to adjust the timing of **micros()**. 
+It is only useful if one has a good source like a calibrated function generator to find the factor 
+to adjust. Testing with my UNO I got a factor 0.9986.
 
 
 ## Test
