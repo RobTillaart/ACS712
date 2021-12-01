@@ -138,8 +138,9 @@ float ACS712::detectFrequency(float mininmalFrequency)
   start = micros();
   for (int i = 0; i < 10; i++)
   {
-    while (analogRead(_pin) > Q1);
-    while (analogRead(_pin) < Q3);
+    // note these loops can block forever. Need a timeout.
+    while (analogRead(_pin) > Q1);  // here
+    while (analogRead(_pin) < Q3);  // and here
   }
   uint32_t stop = micros();
 
