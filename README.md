@@ -5,8 +5,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/ACS712/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/ACS712.svg?maxAge=3600)](https://github.com/RobTillaart/ACS712/releases)
 
-[![Commits since latest](https://img.shields.io/github/commits-since/RobTillaart/ACS712/latest)](https://github.com/RobTillaart/ACS712/commits/master)
-
 
 # ACS712
 
@@ -111,11 +109,15 @@ Values are typical around 1.0 ± 1%
 - **float getMicrosAdjust()** returns the set value. 
 
 The minimum frequency of 40 Hz is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals. 
-Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency. 
-Current version is not performance optimized. 
+Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency.
+
 The **microsAdjust()** is to adjust the timing of **micros()**. 
 It is only useful if one has a good source like a calibrated function generator to find the factor 
 to adjust. Testing with my UNO I got a factor 0.9986.
+
+Current version is not performance optimized. 
+
+Current version of detectFrequency can block forever. The second part has no timeout guard.
 
 
 ## Test
@@ -149,6 +151,5 @@ This needs to be investigated. Probably need a separate thread that wakes up whe
 - int point2point(float freq) function for AC. Is part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
-- detect zero crossing to start? 
-- detect frequency?
+- improve robustness of the **detectFrequency()** function (timeout 2nd part)
 - external analogue read support? separate class?

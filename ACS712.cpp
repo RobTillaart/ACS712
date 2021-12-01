@@ -109,6 +109,7 @@ void ACS712::autoMidPoint(float freq)
 
 //  Experimental frequency detection.
 //  uses oversampling and averaging to minimize variation
+//  blocks for substantial amount of time, depending on minimalFrequency
 float ACS712::detectFrequency(float mininmalFrequency)
 {
   uint16_t maximum = 0;
