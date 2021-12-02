@@ -148,8 +148,8 @@ The examples show the basic working of the functions.
 
 - mA_AC blocks 20 ms so might affect task scheduling on a ESP32.  
 This needs to be investigated. Probably need a separate thread that wakes up when new analogRead is available.
+**detectFrequency** also blocks pretty long.
 - int point2point(float freq) function for AC. Is part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
-- improve robustness of the **detectFrequency()** function (timeout 2nd part)
 - external analogue read support? separate class?
