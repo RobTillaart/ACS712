@@ -76,7 +76,7 @@ class ACS712
     // Experimental frequency detection.
     // the minimal frequency determines the time to sample.
     float           detectFrequency(float minimalFrequency = 40);
-    void            setMicrosAdjust(float value = 1.0) { _microsAdjust = value; };
+    void            setMicrosAdjust(float factor = 1.0) { _microsAdjust = value; };
     float           getMicrosAdjust() { return _microsAdjust; };
 
 
