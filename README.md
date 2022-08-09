@@ -45,7 +45,7 @@ These two ADC parameters are needed to calculate the voltage output of the ACS71
 Since version 0.2.2 frequencies other integer values than 50 and 60 are supported, the lower the frequency, 
 the longer the blocking period.
 Since version 0.2.3 floating point frequencies are supported to tune optimally.
-- **int mA_DC()** blocks < 1 ms (Arduino UNO) as it just needs one **analogRead()**.
+- **int mA_DC()** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 
 
 | type sensor  | mVperA | LSB 5V-10bit |
@@ -70,7 +70,8 @@ By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly 
 
 Also known as crest factor;  affects AC signals only. 
 
-- **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor, must be between 0.0 and 1.0
+- **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor.
+Must typical be between 0.0 and 1.0
 - **float getFormFactor()** returns current form factor. 
 
 The library has a number of predefined form factors:
@@ -106,26 +107,60 @@ Both for AC and DC. Is defined in the constructor and depends on sensor used.
 Typical values see constructor above.
 
 
-#### Experimental
+#### Frequency detection
+
+Experimental functionality for AC signal only!
 
 - **float detectFrequency(float minimalFrequency = 40)** Detect the frequency of the AC signal.
 - **void setMicrosAdjust(float factor = 1.0)** adjusts the timing of micros in **detectFrequency()**.
 Values are typical around 1.0 ± 1%
 - **float getMicrosAdjust()** returns the set factor. 
 
-The minimum frequency of 40 Hz is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals. 
+The minimum frequency of 40 Hz is used to sample enough time
+ to find the minimum and maximum for 50 and 60 Hz signals. 
 Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency.
 
 The **microsAdjust()** is to adjust the timing of **micros()**. 
-It is only useful if one has a good source like a calibrated function generator to find the factor 
-to adjust. Testing with my UNO I got a factor 0.9986.
+It is only useful if one has a good source like a calibrated function generator to find the factor to adjust. 
+Testing with my UNO I got a factor 0.9986.
 
-Current version is not performance optimized. 
+Current version is experimental and not performance optimized. 
+
+
+#### Voltage factor
+
+As per issue #15 in which an ACS712 was connected via a voltage divider to the ADC of an ESP32.
+The voltage divider gave an error of about a factor 2 as all voltages were divided, 
+including the "offset" from the zero level.
+These functions can be used to adjust the factor of the voltage divider used.
+
+- **void setVoltageFactor(float vf = 1.0)** set the voltage divider factor. 
+default is setting it to 1.0 (= no correction).
+- **float getVoltageFactor()** returns the set correction factor, default 1.0.
+
+Schema
+```
+ACS712 ----[ R1 ]----o----[ R2 ]---- GND
+                     |
+                     |
+                ADC of processor
+```
+
+Examples:
+| R1 (ACS) | R2 (GND)  | voltage factor                  |  goal  |
+|:--------:|:---------:|:-------------------------------:|:------:|
+|  10200   |  4745     |  4745 / (10200 + 4745) = 0.3175 |  1/3   |
+|  4745    |  10200    | 10200 / (10200 + 4745) = 0.6825 |  2/3   |
+|  10200   |  9800     |  9800 / (10200 + 9800) = 0.4900 |  1/2   |
+
+Alternative one could use a potentiometer / trim-pot to calibrate 
+the voltage divider too.
 
 
 ## Test
 
 The library is tested with the RobotDyn ACS712 20 A breakout and an Arduino UNO.
+The ESP32 (3V3 device) is confirmed to work too.
 
 
 ## Operation
@@ -149,10 +184,26 @@ The examples show the basic working of the functions.
 
 ## Future
 
-- mA_AC blocks 20 ms so might affect task scheduling on a ESP32.  
-This needs to be investigated. Probably need a separate thread that wakes up when new analogRead is available.
-- **detectFrequency** also blocks pretty long.
+#### Should
+
+- mA_AC blocks 20 ms so might affect task scheduling on a ESP32. This needs to be investigated. 
+Probably need a separate thread that wakes up when new analogRead is available.
+- **detectFrequency(float)** also blocks pretty long.
+
+
+#### Could
+
 - int point2point(float freq) function for AC. Is part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
-- external analogue read support? separate class?
+- **autoVoltageDetect()** based upon the voltage of the ADC given 
+in the constructor and a zero amp current, one could determine the factor automatically.
+```factor = measured / expected voltage.```
+- investigate offset due to inaccurate voltage. Measuring the midpoint could indicate this offset
+which might be twice as big at the end of the scale. MIght be same as above?
+
+
+#### Won't
+
+- external analogue read support? separate class!
+

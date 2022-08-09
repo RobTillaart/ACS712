@@ -31,6 +31,7 @@
 
 unittest_setup()
 {
+    fprintf(stderr, "ACS712_LIB_VERSION: %s\n", (char *) ACS712_LIB_VERSION);
 }
 
 unittest_teardown()
@@ -139,6 +140,23 @@ unittest(test_mVperAmp)
   ACS.setmVperAmp(50);
   mpa = ACS.getmVperAmp();
   assertEqual(50, mpa);
+}
+
+
+unittest(test_voltage_divider)
+{
+  ACS712  ACS(A0, 3.3, 4095, 100);
+
+  float factor = ACS.getVoltageFactor();
+  assertEqualFloat(1.0, factor, 0.001);       // default value..
+
+  ACS.setVoltageFactor(0.345);
+  factor = ACS.getVoltageFactor();
+  assertEqualFloat(0.345, factor, 0.001);
+
+  ACS.setVoltageFactor(0.123);
+  factor = ACS.getVoltageFactor();
+  assertEqualFloat(0.123, factor, 0.001);
 }
 
 
