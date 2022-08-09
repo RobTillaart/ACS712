@@ -48,11 +48,11 @@ Since version 0.2.3 floating point frequencies are supported to tune optimally.
 - **int mA_DC()** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 
 
-| type sensor  | mVperA | LSB 5V-10bit |
-|:-------------|:------:|:------------:|
-|  5 A         |  185   |  ~25 mA      |
-|  20 A        |  100   |  ~50 mA      |
-|  30 A        |  66    |  ~75 mA      |
+|  type sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |
+|:--------------|:--------:|:-----------:|:-----------:|
+|  5 A          |  185     |  ~25 mA     |  ~06.25 mA  |
+|  20 A         |  100     |  ~50 mA     |  ~12.50 mA  |
+|  30 A         |  66      |  ~75 mA     |  ~18.75 mA  |
 
 
 #### Midpoint
@@ -71,7 +71,7 @@ By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly 
 Also known as crest factor;  affects AC signals only. 
 
 - **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor.
-Must typical be between 0.0 and 1.0
+Must typical be between 0.0 and 1.0, see constants below.
 - **float getFormFactor()** returns current form factor. 
 
 The library has a number of predefined form factors:
@@ -135,7 +135,7 @@ including the "offset" from the zero level.
 These functions can be used to adjust the factor of the voltage divider used.
 
 - **void setVoltageFactor(float vf = 1.0)** set the voltage divider factor. 
-default is setting it to 1.0 (= no correction).
+Default is setting it to 1.0 (= no correction).
 - **float getVoltageFactor()** returns the set correction factor, default 1.0.
 
 Schema
@@ -200,7 +200,7 @@ Or just cache the last p2p value?
 in the constructor and a zero amp current, one could determine the factor automatically.
 ```factor = measured / expected voltage.```
 - investigate offset due to inaccurate voltage. Measuring the midpoint could indicate this offset
-which might be twice as big at the end of the scale. MIght be same as above?
+which might be twice as big at the end of the scale. Might be same as above?
 
 
 #### Won't
