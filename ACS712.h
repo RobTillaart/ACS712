@@ -20,6 +20,7 @@
 #define ACS712_FF_SINUS           (1.0/sqrt(2))
 #define ACS712_FF_SQUARE          (1.0)
 #define ACS712_FF_TRIANGLE        (1.0/sqrt(3))
+#define ACS712_FF_SAWTOOTH        (1.0/sqrt(3))
 
 
 class ACS712

@@ -39,6 +39,15 @@ unittest_teardown()
 }
 
 
+unittest(test_constants)
+{
+  assertEqualFloat(1.0/sqrt(2), ACS712_FF_SINUS,    0.001);
+  assertEqualFloat(1.0, ACS712_FF_SQUARE,           0.001);
+  assertEqualFloat(1.0/sqrt(3), ACS712_FF_TRIANGLE, 0.001);
+  assertEqualFloat(1.0/sqrt(3), ACS712_FF_SAWTOOTH, 0.001);
+}
+
+
 unittest(test_mA_DC)
 {
   GodmodeState* state = GODMODE();

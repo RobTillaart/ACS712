@@ -81,7 +81,7 @@ The library has a number of predefined form factors:
 | ACS712_FF_SQUARE     | 1.0           | 1.000  |         |
 | ACS712_FF_SINUS      | 1.0 / sqrt(2) | 0.707  | default |
 | ACS712_FF_TRIANGLE   | 1.0 / sqrt(3) | 0.577  |         |
-|                      |               |        |         |
+| ACS712_FF_SAWTOOTH   | 1.0 / sqrt(3) | 0.577  |         |
 
 It is important to measure the current with a calibrated multimeter
 and determine / verify the form factor of the signal. 
