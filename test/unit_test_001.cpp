@@ -52,11 +52,11 @@ unittest(test_mA_DC)
   int future[12] = {0, 0, 100, 100, 200, 200, 511, 511, 900, 900, 1023, 1023};
   state->analogPin[0].fromArray(future, 12);
 
-  assertEqual(-24975, ACS.mA_DC());
-  assertEqual(-20087, ACS.mA_DC());
+  assertEqual(-24976, ACS.mA_DC());
+  assertEqual(-20088, ACS.mA_DC());
   assertEqual(-15200, ACS.mA_DC());
   assertEqual(0, ACS.mA_DC());
-  assertEqual(19012, ACS.mA_DC());
+  assertEqual(19013, ACS.mA_DC());
   assertEqual(25024, ACS.mA_DC());
 }
 
