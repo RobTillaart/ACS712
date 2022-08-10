@@ -32,11 +32,24 @@ on the signal form. For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 See Form factor below.
 
 
+#### Tests
+
+The library is at least confirmed to work with:
+
+| device      | voltage | ADC steps |  Notes  |
+|:-----------:|:-------:|:---------:|:-------:|
+| Arduino UNO |  5.0V   |   1024    | tested with RobotDyn ACS712 20 A breakout
+| ESP32       |  3.3V   |   4096    | #15
+| Promicro    |  5.0V   |   1024    | #15 
+
+Please let me know of other working platforms.
+
+
 ## Interface
 
 #### Base
 
-- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, uint8_t mVperA = 100)** constructor. 
+- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperA = 100)** constructor. 
 It defaults a 20 A type sensor, which is defined by the default value of mVperA. See table below.
 Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum output of the internal ADC.
 The defaults are based upon an Arduino UNO.
@@ -44,15 +57,15 @@ These two ADC parameters are needed to calculate the voltage output of the ACS71
 - **int mA_AC(float freq = 50)** blocks ~21 ms (depending on the freq) to sample a whole 50 or 60 Hz period.  
 Since version 0.2.2 frequencies other integer values than 50 and 60 are supported, the lower the frequency, 
 the longer the blocking period.
-Since version 0.2.3 floating point frequencies are supported to tune optimally.
-- **int mA_DC()** blocks < 1 ms (Arduino UNO) as it just needs one **analogRead()**.
+Since version 0.2.3 floating point frequencies are supported to tune even better.
+- **int mA_DC()** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 
 
-| type sensor  | mVperA | LSB 5V-10bit |
-|:-------------|:------:|:------------:|
-|  5 A         |  185   |  ~25 mA      |
-|  20 A        |  100   |  ~50 mA      |
-|  30 A        |  66    |  ~75 mA      |
+|  type sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |
+|:--------------|:--------:|:-----------:|:-----------:|
+|  5 A          |  185     |  ~25 mA     |  ~06.25 mA  |
+|  20 A         |  100     |  ~50 mA     |  ~12.50 mA  |
+|  30 A         |  66      |  ~75 mA     |  ~18.75 mA  |
 
 
 #### Midpoint
@@ -70,7 +83,8 @@ By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly 
 
 Also known as crest factor;  affects AC signals only. 
 
-- **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor, must be between 0.0 and 1.0
+- **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor.
+Must typical be between 0.0 and 1.0, see constants below.
 - **float getFormFactor()** returns current form factor. 
 
 The library has a number of predefined form factors:
@@ -80,11 +94,13 @@ The library has a number of predefined form factors:
 | ACS712_FF_SQUARE     | 1.0           | 1.000  |         |
 | ACS712_FF_SINUS      | 1.0 / sqrt(2) | 0.707  | default |
 | ACS712_FF_TRIANGLE   | 1.0 / sqrt(3) | 0.577  |         |
-|                      |               |        |         |
+| ACS712_FF_SAWTOOTH   | 1.0 / sqrt(3) | 0.577  |         |
 
 It is important to measure the current with a calibrated multimeter
 and determine / verify the form factor of the signal. 
 This can help to improve the quality of your measurements.
+
+Please let me know if other crest factors need to be added.
 
 
 #### Noise
@@ -100,32 +116,64 @@ is used to determine zero level e.g. in AC measurements.
 
 Both for AC and DC. Is defined in the constructor and depends on sensor used. 
 
-- **void setmVperAmp(uint8_t mva)** sets the milliVolt per Ampere measured.
-- **uint8_t getmVperAmp()** returns the set value.
+- **void setmVperAmp(float mva)** sets the milliVolt per Ampere measured.
+- **float getmVperAmp()** returns the set value.
 
-Typical values see constructor above.
+Typical values see constructor above, and the "voltage divider" section below.
 
 
-#### Experimental
+#### Frequency detection
+
+Experimental functionality for AC signal only!
 
 - **float detectFrequency(float minimalFrequency = 40)** Detect the frequency of the AC signal.
 - **void setMicrosAdjust(float factor = 1.0)** adjusts the timing of micros in **detectFrequency()**.
 Values are typical around 1.0 ± 1%
 - **float getMicrosAdjust()** returns the set factor. 
 
-The minimum frequency of 40 Hz is used to sample enough time to find the minimum and maximum for 50 and 60 Hz signals. 
+The minimum frequency of 40 Hz is used to sample enough time
+ to find the minimum and maximum for 50 and 60 Hz signals. 
 Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency.
 
 The **microsAdjust()** is to adjust the timing of **micros()**. 
-It is only useful if one has a good source like a calibrated function generator to find the factor 
-to adjust. Testing with my UNO I got a factor 0.9986.
+It is only useful if one has a good source like a calibrated function generator to find the factor to adjust. 
+Testing with my UNO I got a factor 0.9986.
 
-Current version is not performance optimized. 
+Current version is experimental and not performance optimized. 
 
 
-## Test
+## Voltage divider
 
-The library is tested with the RobotDyn ACS712 20 A breakout and an Arduino UNO.
+As per issue #15 in which an ACS712 was connected via a voltage divider to the ADC of an ESP32.
+
+Schema
+```
+ACS712 ----[ R1 ]----o----[ R2 ]---- GND
+                     |
+                     |
+                ADC of processor
+```
+
+The voltage divider gave an error of about a factor 2 as all voltages were divided, 
+especially the "offset" from the zero level.
+
+By adjusting the mV per Ampere with **setmVperAmp(float mva)** the readings can be corrected 
+for this "voltage divider effect".
+
+
+#### Examples:
+
+For a 20 A type sensor, 100 mV/A would be the normal value. 
+After using a voltage divider one need to adjust the mVperAmp.
+
+| R1 (ACS) | R2 (GND)  | voltage factor                  |  mVperAmp corrected     |
+|:--------:|:---------:|:-------------------------------:|:-----------------------:|
+|  10200   |  4745     |  4745 / (10200 + 4745) = 0.3175 |  100 \* 0.3175 = 31.75  |
+|  4745    |  10200    | 10200 / (10200 + 4745) = 0.6825 |  100 \* 0.6825 = 68.25  |
+|  10200   |  9800     |  9800 / (10200 + 9800) = 0.4900 |  100 \* 0.4900 = 49.00  |
+
+
+**Note:** setting the midPoint correctly is needed when using a voltage divider.
 
 
 ## Operation
@@ -149,10 +197,25 @@ The examples show the basic working of the functions.
 
 ## Future
 
-- mA_AC blocks 20 ms so might affect task scheduling on a ESP32.  
-This needs to be investigated. Probably need a separate thread that wakes up when new analogRead is available.
-- **detectFrequency** also blocks pretty long.
-- int point2point(float freq) function for AC. Is part of mA_AC() already.  
+#### Should
+
+- investigate blocking calls:
+  - **mA_AC()** blocks for about 20 ms at 50 Hz.
+  This might affect task scheduling on a ESP32. Needs to be investigated. 
+  Probably need a separate thread that wakes up when new analogRead is available?
+  - **detectFrequency(float)** also blocks pretty long.
+- investigate support for micro-Amperes. **ACS.uA_DC()**
+
+
+#### Could
+
+- do we need to add **int point2point(float freq)** function for AC. 
+Is technically a part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
-- external analogue read support? separate class?
+
+
+#### Won't
+
+- external analogue read support? separate class!
+
