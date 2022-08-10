@@ -27,7 +27,7 @@
 #include "ACS712.h"
 
 
-ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, uint8_t mVperA)
+ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperA)
 {
   _pin = analogPin;
   _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
