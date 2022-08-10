@@ -25,10 +25,11 @@ however other values e.g. 50.1 or 40 or 123.456 are possible.
 To measure DC current a single **analogRead()** with conversion maths is sufficient to get
 a value. To stabilize the signal **analogRead()** is called twice.
 
-To measure AC current **a blocking loop for 20 milliseconds** is run to determine the
-peak to peak value which is converted to the RMS value. To convert the peak2peak
-value to RMS one need the so called crest or form factor. This factor depends heavily
-on the signal form. For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
+To measure AC current **a blocking loop for 20 milliseconds** (50 Hz assumed) is run 
+to determine the peak to peak value which is converted to the RMS value. 
+To convert the peak2peak value to RMS one need the so called crest or form factor. 
+This factor depends heavily on the signal form. 
+For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 See Form factor below.
 
 
@@ -36,8 +37,8 @@ See Form factor below.
 
 The library is at least confirmed to work with:
 
-| device      | voltage | ADC steps |  Notes  |
-|:-----------:|:-------:|:---------:|:-------:|
+| Device      | Voltage | ADC steps |  Notes  |
+|:------------|:-------:|:---------:|:--------|
 | Arduino UNO |  5.0V   |   1024    | tested with RobotDyn ACS712 20 A breakout
 | ESP32       |  3.3V   |   4096    | #15
 | Promicro    |  5.0V   |   1024    | #15 
@@ -59,13 +60,16 @@ Since version 0.2.2 frequencies other integer values than 50 and 60 are supporte
 the longer the blocking period.
 Since version 0.2.3 floating point frequencies are supported to tune even better.
 - **int mA_DC()** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
+A negative value indicates the current flows in the other direction.
 
 
-|  type sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |
-|:--------------|:--------:|:-----------:|:-----------:|
-|  5 A          |  185     |  ~25 mA     |  ~06.25 mA  |
-|  20 A         |  100     |  ~50 mA     |  ~12.50 mA  |
-|  30 A         |  66      |  ~75 mA     |  ~18.75 mA  |
+#### Resolution
+
+|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |
+|:---------|:--------:|:-----------:|:-----------:|:-----------:|
+|  5 A     |  185     |   ~25 mA    |  ~06.25 mA  |  ~0.38 mA   |
+|  20 A    |  100     |  ~100 mA    |  ~25.00 mA  |  ~1.54 mA   |
+|  30 A    |  66      |  ~150 mA    |  ~37.50 mA  |  ~2.31 mA   |
 
 
 #### Midpoint
@@ -114,12 +118,14 @@ is used to determine zero level e.g. in AC measurements.
 
 #### mV per Ampere
 
-Both for AC and DC. Is defined in the constructor and depends on sensor used. 
+Used for both for AC and DC measurements. 
+Its value is defined in the constructor and depends on type sensor used.
+These functions allow to adjust this setting run-time.
 
 - **void setmVperAmp(float mva)** sets the milliVolt per Ampere measured.
 - **float getmVperAmp()** returns the set value.
 
-Typical values see constructor above, and the "voltage divider" section below.
+Typical values see "Resolution" section above, and the "voltage divider" section below.
 
 
 #### Frequency detection
@@ -131,12 +137,13 @@ Experimental functionality for AC signal only!
 Values are typical around 1.0 ± 1%
 - **float getMicrosAdjust()** returns the set factor. 
 
-The minimum frequency of 40 Hz is used to sample enough time
- to find the minimum and maximum for 50 and 60 Hz signals. 
+The minimum frequency of 40 Hz is used to sample for enough time to find the minimum and maximum
+for 50 and 60 Hz signals. 
 Thereafter the signal is sampled 10 cycles to minimize the variation of the frequency.
 
 The **microsAdjust()** is to adjust the timing of **micros()**. 
-It is only useful if one has a good source like a calibrated function generator to find the factor to adjust. 
+This function is only useful if one has a good reference source like a calibrated function generator 
+to find the factor to adjust. 
 Testing with my UNO I got a factor 0.9986.
 
 Current version is experimental and not performance optimized. 
@@ -155,7 +162,7 @@ ACS712 ----[ R1 ]----o----[ R2 ]---- GND
 ```
 
 The voltage divider gave an error of about a factor 2 as all voltages were divided, 
-especially the "offset" from the zero level.
+including the "offset" from the zero current level.
 
 By adjusting the mV per Ampere with **setmVperAmp(float mva)** the readings can be corrected 
 for this "voltage divider effect".
@@ -178,10 +185,10 @@ After using a voltage divider one need to adjust the mVperAmp.
 
 ## Operation
 
-With the constructor the parameters **volts** and **maxADC (steps)** of the ADC are set
-together with the **milliVolt per Ampere** value. The last parameter can be adjusted
-afterwards, e.g. to calibrate this value runtime. Note this parameter affects both
-AC and DC measurements.
+With the constructor the parameters **volts** and **maxADC (== steps-1)** of the ADC are set
+together with the **milliVolt per Ampere** value. 
+The last parameter can be adjusted afterwards, e.g. to calibrate this value runtime. 
+Note this parameter affects both AC and DC measurements.
 
 To calibrate the zero level for DC measurements, 5 functions are available to
 adjust the midPoint.
@@ -213,6 +220,7 @@ The examples show the basic working of the functions.
 Is technically a part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
+- **midPOint()** functions could all return actual midPoint iso void.
 
 
 #### Won't
