@@ -35,13 +35,13 @@ class ACS712
     //  5A        185.0
     //  20A       100.0
     //  30A        66.0
-    ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperA = 100);
+    ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperAmpere = 100);
 
 
     //  returns mA
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.
     //  lower frequencies block longer.
-    int      mA_AC(float freq = 50);
+    int      mA_AC(float frequency = 50);
 
 
     //  returns mA
@@ -49,18 +49,18 @@ class ACS712
     int      mA_DC();
 
 
-    //  midpoint ADC for DC only
-    void     setMidPoint(uint16_t mp) { _midPoint = mp; };
+    //  midPoint ADC for DC only
+    void     setMidPoint(uint16_t midPoint) { _midPoint = midPoint; };
     uint16_t getMidPoint() { return _midPoint; };
     void     incMidPoint() { _midPoint++; };
     void     decMidPoint() { _midPoint--; };
     //  Auto midPoint, assuming zero DC current or any AC current
-    void autoMidPoint(float freq = 50);
+    void autoMidPoint(float frequency = 50);
 
 
-    //  Form Factor is also known as crest factor;  affects mA_AC() only
-    //  default sinus.
-    void     setFormFactor(float ff = ACS712_FF_SINUS) { _formFactor = ff; };
+    //  Form Factor is also known as crest factor;
+    //  affects mA_AC() only,  default sinus.
+    void     setFormFactor(float formFactor = ACS712_FF_SINUS) { _formFactor = formFactor; };
     float    getFormFactor() { return _formFactor; };
 
 
@@ -70,7 +70,7 @@ class ACS712
 
 
     //  AC and DC
-    void     setmVperAmp(float mva) { _mVperAmpere = mva; };
+    void     setmVperAmp(float mVperAmpere) { _mVperAmpere = mVperAmpere; };
     float    getmVperAmp() { return _mVperAmpere; };
 
 

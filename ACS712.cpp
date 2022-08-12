@@ -27,20 +27,20 @@
 #include "ACS712.h"
 
 
-ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperA)
+ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmpere)
 {
   _pin = analogPin;
   _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
-  _mVperAmpere = mVperA;
+  _mVperAmpere = mVperAmpere;
   _formFactor  = ACS712_FF_SINUS;  
   _midPoint    = maxADC / 2;
   _noisemV     = 21;             //  Noise is 21mV according to datasheet
 }
 
 
-int ACS712::mA_AC(float freq)
+int ACS712::mA_AC(float frequency)
 {
-  uint16_t period  = round(1000000UL / freq);
+  uint16_t period  = round(1000000UL / frequency);
   uint16_t samples = 0;
   uint16_t zeros   = 0;
 
@@ -55,8 +55,10 @@ int ACS712::mA_AC(float freq)
   {
     samples++;
     int val = analogRead(_pin);
+    //  determine extremes
     if (val < _min) _min = val;
     else if (val > _max) _max = val;
+    //  count zeros
     if (abs(val - _midPoint) <= zeroLevel ) zeros++;
   }
   int point2point = (_max - _min);
@@ -64,7 +66,8 @@ int ACS712::mA_AC(float freq)
   //  automatic determine _formFactor / crest factor
   float D = 0;
   float FF = 0;
-  if (zeros > samples * 0.025)          //  more than 2% zero's
+  //  TODO uint32_t math?  (zeros * 40) > samples
+  if (zeros > samples * 0.025)          //  more than 2% zero's   
   {
     D = 1.0 - (1.0 * zeros) / samples;  //  % SAMPLES NONE ZERO
     FF = sqrt(D) * ACS712_FF_SINUS;     //  ASSUME NON ZERO PART ~ SINUS
@@ -95,9 +98,9 @@ int ACS712::mA_DC()
 //  configure by sampling for 2 cycles of AC
 //  Also works for DC as long as no current flowing
 //  note this is blocking!
-void ACS712::autoMidPoint(float freq)
+void ACS712::autoMidPoint(float frequency)
 {
-  uint16_t twoPeriods = round(2000000UL / freq);
+  uint16_t twoPeriods = round(2000000UL / frequency);
 
   uint32_t total   = 0;
   uint32_t samples = 0;
@@ -106,7 +109,7 @@ void ACS712::autoMidPoint(float freq)
   {
     uint16_t reading = analogRead(_pin);
     total += reading;
-    samples ++;
+    samples++;
     //  Delaying ensures we won't overflow since we'll perform a maximum of 40,000 reads
     delayMicroseconds(1);
   }

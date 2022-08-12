@@ -50,12 +50,12 @@ Please let me know of other working platforms.
 
 #### Base
 
-- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperA = 100)** constructor. 
-It defaults a 20 A type sensor, which is defined by the default value of mVperA. See table below.
+- **ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperAmpere = 100)** constructor. 
+It defaults a 20 A type sensor, which is defined by the default value of mVperAmpere. See table below.
 Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum output of the internal ADC.
 The defaults are based upon an Arduino UNO.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
-- **int mA_AC(float freq = 50)** blocks ~21 ms (depending on the freq) to sample a whole 50 or 60 Hz period.  
+- **int mA_AC(float frequency = 50)** blocks ~21 ms (depending on the frequency) to sample a whole 50 or 60 Hz period.  
 Since version 0.2.2 frequencies other integer values than 50 and 60 are supported, the lower the frequency, 
 the longer the blocking period.
 Since version 0.2.3 floating point frequencies are supported to tune even better.
@@ -74,8 +74,8 @@ A negative value indicates the current flows in the other direction.
 
 #### Midpoint
 
-- **void setMidPoint(uint16_t mp)** sets midpoint for the ADC conversion.
-- **void autoMidPoint(float freq = 50)** Auto midPoint, assuming zero DC current or any AC current. 
+- **void setMidPoint(uint16_t midPoint)** sets midpoint for the ADC conversion.
+- **void autoMidPoint(float frequency = 50)** Auto midPoint, assuming zero DC current or any AC current. 
 Note it will block for 2 periods. Since version 0.2.2 frequencies other than 50 and 60 are supported.
 By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly getting a better average.
 - **uint16_t getMidPoint()** read the value set / determined.
@@ -87,7 +87,7 @@ By setting the frequency to e.g 1, the code will sample for 2 seconds, possibly 
 
 Also known as crest factor;  affects AC signals only. 
 
-- **void setFormFactor(float ff = ACS712_FF_SINUS)** manually sets form factor.
+- **void setFormFactor(float formFactor = ACS712_FF_SINUS)** manually sets form factor.
 Must typical be between 0.0 and 1.0, see constants below.
 - **float getFormFactor()** returns current form factor. 
 
@@ -122,7 +122,7 @@ Used for both for AC and DC measurements.
 Its value is defined in the constructor and depends on type sensor used.
 These functions allow to adjust this setting run-time.
 
-- **void setmVperAmp(float mva)** sets the milliVolt per Ampere measured.
+- **void setmVperAmp(float mVperAmpere)** sets the milliVolt per Ampere measured.
 - **float getmVperAmp()** returns the set value.
 
 Typical values see "Resolution" section above, and the "voltage divider" section below.
@@ -206,21 +206,23 @@ The examples show the basic working of the functions.
 
 #### Should
 
+- return types (0.4.0)
+  - float for **mA_AC()** and **mA_DC()**
+  - actual value for **midPoint()** functions instead of void.
 - investigate blocking calls:
   - **mA_AC()** blocks for about 20 ms at 50 Hz.
   This might affect task scheduling on a ESP32. Needs to be investigated. 
   Probably need a separate thread that wakes up when new analogRead is available?
-  - **detectFrequency(float)** also blocks pretty long.
+  - **detectFrequency(float)** blocks pretty long.
 - investigate support for micro-Amperes. **ACS.uA_DC()**
 
 
 #### Could
 
-- do we need to add **int point2point(float freq)** function for AC. 
+- do we need a **int point2point(float frequency)** function for AC. 
 Is technically a part of mA_AC() already.  
 Needs extra global variables, which are slower than local ones  
 Or just cache the last p2p value?
-- **midPOint()** functions could all return actual midPoint iso void.
 
 
 #### Won't
