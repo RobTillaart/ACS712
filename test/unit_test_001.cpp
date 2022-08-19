@@ -184,9 +184,9 @@ unittest(test_AmperePerStep)
     ACS.setmVperAmp(mva);
     aps = ACS.getAmperePerStep();
     assertEqualFloat(5000.0/1023/mva, aps, 0.001);
+    mva += 24;
   }
 }
-
 
 
 unittest_main()
