@@ -1,9 +1,10 @@
 //
 //    FILE: ACS712_20_DC.ino
 //  AUTHOR: Rob Tillaart
-// PURPOSE: demo
+// PURPOSE: demo to measure mA DC
 //     URL: https://github.com/RobTillaart/ACS712
 
+//  use with Arduino Serial Plotter
 
 #include "ACS712.h"
 
@@ -22,7 +23,11 @@ ACS712  ACS(A0, 5.0, 1023, 100);
 void setup()
 {
   Serial.begin(115200);
+  while (!Serial);
   Serial.println(__FILE__);
+  Serial.print("ACS712_LIB_VERSION: ");
+  Serial.println(ACS712_LIB_VERSION);
+
   ACS.autoMidPoint();
 }
 
@@ -31,6 +36,7 @@ void loop()
 {
   int mA = ACS.mA_DC();
   Serial.println(mA);
+  delay(100);
 }
 
 

@@ -1,7 +1,7 @@
 //
-//    FILE: ACS712_detectFrequency.ino
+//    FILE: ACS712_20_AC_SAMPLING_DEMO.ino
 //  AUTHOR: Rob Tillaart
-// PURPOSE: demo detect frequency + timing indication.
+// PURPOSE: demo to sample AC current and set mVPerAmpere
 //     URL: https://github.com/RobTillaart/ACS712
 
 
@@ -12,12 +12,11 @@
 //  ACS712 5A  uses 185 mV per A
 //  ACS712 20A uses 100 mV per A
 //  ACS712 30A uses  66 mV per A
+
+
 ACS712  ACS(A0, 5.0, 1023, 100);
 //  ESP 32 example (might requires resistors to step down the logic voltage)
 //  ACS712  ACS(25, 3.3, 4095, 185);
-
-
-uint32_t start, stop;
 
 
 void setup()
@@ -27,23 +26,27 @@ void setup()
   Serial.println(__FILE__);
   Serial.print("ACS712_LIB_VERSION: ");
   Serial.println(ACS712_LIB_VERSION);
+  
+  ACS.autoMidPoint();
 }
 
 
 void loop()
 {
-  //  e.g. detect 50 or 60 Hz sinus signal
-  //  blocks on bad signals.
-  start = micros();
-  float frequency = ACS.detectFrequency(45);
-  stop = micros();
+  float mA = ACS.mA_AC_sampling();
+  Serial.println(mA, 1);
 
-  Serial.print(stop - start);
-  Serial.print("\t");
-  Serial.println(frequency, 1);
-  delay(100);
+  while (Serial.available() > 0)
+  {
+    char c = Serial.read();
+
+    if (c == '*') ACS.setmVperAmp(ACS.getmVperAmp() + 1);
+    if (c == '/') ACS.setmVperAmp(ACS.getmVperAmp() - 1);
+    Serial.print("mVperAmp:\t");
+    Serial.println(ACS.getmVperAmp());
+  }
+  delay(250);
 }
 
 
 // -- END OF FILE --
-
