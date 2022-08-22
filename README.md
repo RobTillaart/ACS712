@@ -39,19 +39,13 @@ That would improve stability of the midpoint and minimizes the noise.
 
 #### Compatibles
 
-to investigate / test
+To investigate / test.
 
 Robodyn has breakout for ACS758 - 50A,
 
-https://www.allegromicro.com/en/products/sense/current-sensor-ics/current-sensors-innovations
+Allegromicro offer a lot of different ones, that might be compatible.
 
-they offer a lot of different ones, that might be compatible.
-ACS71240, ACS37800
-ACS724, ACS725, ACS720, ACS732, ACS733
-ACS780, ACS781, ACS772, ACS773
-ACS3761X, ACS37002, ACS37003, 
-ACS72981
-ACS758 - 50A, 100A, 150A, 200A 
+https://www.allegromicro.com/en/products/sense/current-sensor-ics/current-sensors-innovations
 
 
 #### Tests
@@ -114,7 +108,7 @@ This function is almost mandatory for measuring AC.
 
 #### Form factor 
 
-Also known as crest factor;  affects only signals measured with **mA_AC()**. 
+Also known as crest factor. Only used for signals measured with **mA_AC()**.
 
 - **void setFormFactor(float formFactor = ACS712_FF_SINUS)** manually sets form factor.
 Must typical be between 0.0 and 1.0, see constants below.
@@ -233,8 +227,10 @@ The examples show the basic working of the functions.
 
 ## Future
 
-#### Should - 0.3.0
+#### Should - 0.3.x
 
+- fix Form Factor in **mA_AC()**
+  - the value set in **setFormFactor()** is not used!
 - return types
   - float for **mA_AC()** and **mA_DC()**
   - actual value for **midPoint()** functions instead of void.
@@ -246,6 +242,7 @@ The examples show the basic working of the functions.
   - RTOS specific class?
   - **detectFrequency(float)** blocks pretty long.
 - pre-calculate **\_AmperePerStep** to remove expensive float division.
+  - should mA per step be more efficient?
 - more testing.
 - add count parameter to **mA_DC(uint8_t count = 1)** to takes multiple
   readings instead of just one. 
@@ -263,7 +260,8 @@ The examples show the basic working of the functions.
 - ACS712X class with external ADC ( 16 or even 24 bit)
   - keep interface alike?
 - external history file
-
+- Should the FormFactor not be just a parameter of **mA_AC()**
+  it is the only function using it.
 
 #### Won't
 

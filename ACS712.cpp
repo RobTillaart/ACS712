@@ -23,12 +23,15 @@
 //  0.2.7  2022-08-10  change mVperAmp to float
 //                     add ACS712_FF_SAWTOOTH
 //                     update readme.md + unit test + minor edits
-//  0.2.8  2022-08-19  add mA_AC_sampling() as method to determine
+//  0.2.8  2022-08-19  prepare for 0.3.0
+//                     Fix #21 FormFactor
+//                     add mA_AC_sampling() as method to determine
 //                     current when FormFactor is unknown.
 //                     added float _AmperePerStep cached value.
 //                     added getAmperePerStep();
-//                     prepare 0.3.0 moved several functions to .cpp
+//                     moved several functions to .cpp
 //                     improve documentation
+//
 
 
 #include "ACS712.h"
@@ -81,18 +84,16 @@ int ACS712::mA_AC(float frequency)
   if (zeros > samples * 0.025)          //  more than 2% zero's
   {
     D = 1.0 - (1.0 * zeros) / samples;  //  % SAMPLES NONE ZERO
-    FF = sqrt(D) * ACS712_FF_SINUS;     //  ASSUME NON ZERO PART ~ SINUS
+    FF = sqrt(D) * _formFactor;         //  ASSUME NON ZERO PART ~ SINUS
   }
   else                  //  # zeros is small => D --> 1 --> sqrt(D) --> 1
   {
-    FF = ACS712_FF_SINUS;
+    FF = _formFactor;
   }
-  _formFactor = FF;
 
   //  value could be partially pre-calculated: C = 1000.0 * 0.5 * _mVperStep / _mVperAmpere;
   //  return 1000.0 * 0.5 * point2point * _mVperStep * _formFactor / _mVperAmpere);
-  //  float mA = (500.0 * point2point) * _mVperStep * _formFactor / _mVperAmpere;
-  float mA = (500.0 * point2point) * _formFactor * _AmperePerStep;
+  float mA = (500.0 * point2point) * FF * _AmperePerStep;
   return round(mA);
 }
 
@@ -180,7 +181,7 @@ float ACS712::getFormFactor()
 };
 
 
-// CALIBRATION NOISE
+//  CALIBRATION NOISE
 //  noise defaults 21 datasheet
 void  ACS712::setNoisemV(uint8_t noisemV)
 {
