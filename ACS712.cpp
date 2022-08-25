@@ -55,6 +55,7 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
 {
   uint16_t period  = round(1000000UL / frequency);
 
+  if (cycles == 0) cycles = 1;
   float sum = 0;
   
   for (uint16_t i = 0; i < cycles; i++)
@@ -110,6 +111,7 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
 {
   uint32_t period = round(1000000UL / frequency);
 
+  if (cycles == 0) cycles = 1;
   float sum = 0;
 
   for (uint16_t i = 0; i < cycles; i++)
@@ -126,7 +128,7 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     }
     sum += sqrt(sumSquared / samples);
   }
-  float mA = 1000.0 * sum * _AmperePerStep/ cycles;
+  float mA = 1000.0 * sum * _AmperePerStep / cycles;
   return mA;
 }
 
@@ -152,20 +154,24 @@ void ACS712::setMidPoint(uint16_t midPoint)
   _midPoint = midPoint;
 };
 
+
 uint16_t ACS712::getMidPoint()
 {
   return _midPoint;
 };
+
 
 void ACS712::incMidPoint()
 {
   _midPoint += 1;
 };
 
+
 void ACS712::decMidPoint()
 {
   _midPoint -= 1;
 };
+
 
 //  configure by sampling for 2 cycles of AC
 //  Also works for DC as long as no current flowing

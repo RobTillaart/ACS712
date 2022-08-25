@@ -16,11 +16,11 @@ Library for the ACS712 Current Sensor - 5A, 20A, 30A.
 The ACS712 is a chip to measure current, both AC or DC. The chip has an
 analogue output that provides a voltage that is linear with the current.
 The ACS712 library supports only a built in ADC by means of **analogRead()**.
-There are 2 core functions:
+There are 3 core functions:
 
-- **int mA_DC()**
-- **int mA_AC(float frequency = 50)** The frequency can be set to typically 50 or 60 Hz
-however other values e.g. 50.1 or 40 or 123.456 are possible.
+- **int mA_DC(cycles = 1)**
+- **int mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any value but typically to 50 or 60 Hz.
+- **float mA_AC_sampling(frequency = 50, cycles = 1)** 
 
 To measure DC current a single **analogRead()** with conversion maths is sufficient to get
 a value. To stabilize the signal **analogRead()** is called twice.
