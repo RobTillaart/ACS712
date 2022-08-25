@@ -51,77 +51,97 @@ ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmper
 
 
 //  MEASUREMENTS
-int ACS712::mA_AC(float frequency)
+int ACS712::mA_AC(float frequency, uint16_t cycles)
 {
   uint16_t period  = round(1000000UL / frequency);
-  uint16_t samples = 0;
-  uint16_t zeros   = 0;
 
-  int _min, _max;
-  _min = _max = analogRead(_pin);
-
-  //  remove expensive float operation from loop.
-  uint16_t zeroLevel = round(_noisemV/_mVperStep);
-
-  //  find minimum and maximum and count the zero-level "percentage"
-  uint32_t start = micros();
-  while (micros() - start < period)  // UNO ~180 samples...
+  float sum = 0;
+  
+  for (uint16_t i = 0; i < cycles; i++)
   {
-    samples++;
-    int val = analogRead(_pin);
-    //  determine extremes
-    if (val < _min) _min = val;
-    else if (val > _max) _max = val;
-    //  count zeros
-    if (abs(val - _midPoint) <= zeroLevel ) zeros++;
-  }
-  int point2point = _max - _min;
+    uint16_t samples = 0;
+    uint16_t zeros   = 0;
 
-  //  automatic determine _formFactor / crest factor
-  float D = 0;
-  float FF = 0;
-  //  TODO uint32_t math?  (zeros * 40) > samples
-  if (zeros > samples * 0.025)          //  more than 2% zero's
-  {
-    D = 1.0 - (1.0 * zeros) / samples;  //  % SAMPLES NONE ZERO
-    FF = sqrt(D) * _formFactor;         //  ASSUME NON ZERO PART ~ SINUS
-  }
-  else                  //  # zeros is small => D --> 1 --> sqrt(D) --> 1
-  {
-    FF = _formFactor;
-  }
+    int _min, _max;
+    _min = _max = analogRead(_pin);
 
-  //  value could be partially pre-calculated: C = 1000.0 * 0.5 * _mVperStep / _mVperAmpere;
-  //  return 1000.0 * 0.5 * point2point * _mVperStep * _formFactor / _mVperAmpere);
-  float mA = (500.0 * point2point) * FF * _AmperePerStep;
+    //  remove expensive float operation from loop.
+    uint16_t zeroLevel = round(_noisemV/_mVperStep);
+
+    //  find minimum and maximum and count the zero-level "percentage"
+    uint32_t start = micros();
+    while (micros() - start < period)  // UNO ~180 samples...
+    {
+      samples++;
+      int val = analogRead(_pin);
+      //  determine extremes
+      if (val < _min) _min = val;
+      else if (val > _max) _max = val;
+      //  count zeros
+      if (abs(val - _midPoint) <= zeroLevel ) zeros++;
+    }
+    int point2point = _max - _min;
+
+    //  automatic determine _formFactor / crest factor
+    float D = 0;
+    float FF = 0;
+    //  TODO uint32_t math?  (zeros * 40) > samples
+    if (zeros > samples * 0.025)          //  more than 2% zero's
+    {
+      D = 1.0 - (1.0 * zeros) / samples;  //  % SAMPLES NONE ZERO
+      FF = sqrt(D) * _formFactor;         //  ASSUME NON ZERO PART ~ SINUS
+    }
+    else                  //  # zeros is small => D --> 1 --> sqrt(D) --> 1
+    {
+      FF = _formFactor;
+    }
+
+    //  value could be partially pre-calculated: C = 1000.0 * 0.5 * _mVperStep / _mVperAmpere;
+    //  return 1000.0 * 0.5 * point2point * _mVperStep * _formFactor / _mVperAmpere);
+    sum += point2point * FF;
+  }
+  float mA = 500.0 * sum * _AmperePerStep/ cycles;
+
   return round(mA);
 }
 
 
-float ACS712::mA_AC_sampling(float frequency)
+float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
 {
   uint32_t period     = round(1000000UL / frequency);
-  uint16_t samples    = 0;
-  float    sumSquared = 0;
+  
+  float sum = 0;
 
-  uint32_t start = micros();
-  while (micros() - start < period)
+  for (uint16_t i = 0; i < cycles; i++)
   {
-    samples++;
-    float current = analogRead(_pin) - _midPoint;
-    sumSquared += (current * current);
+    uint16_t samples    = 0;
+    float    sumSquared = 0;
+
+    uint32_t start = micros();
+    while (micros() - start < period)
+    {
+      samples++;
+      float current = analogRead(_pin) - _midPoint;
+      sumSquared += (current * current);
+    }
+    sum += sqrt(sumSquared / samples);
   }
-  float RMS = sqrt(sumSquared / samples) * _AmperePerStep;
-  return RMS * 1000.0;  //  mA
+  float mA = 1000.0 * sum  * _AmperePerStep/ cycles;
+  return mA;
 }
 
 
-int ACS712::mA_DC()
+int ACS712::mA_DC(uint16_t cycles)
 {
-  //  read twice to stabilize the ADC
+  //  read at least twice to stabilize the ADC
   analogRead(_pin);
-  int steps = analogRead(_pin) - _midPoint;
-  float mA = 1000.0 * steps * _AmperePerStep;
+  if (cycles == 0) cycles = 1;
+  float sum = 0;
+  for (uint16_t i = 0; i < cycles; i++)
+  {
+    sum += analogRead(_pin) - _midPoint;
+  }
+  float mA = 1000.0 * sum * _AmperePerStep / cycles;
   return round(mA);
 }
 

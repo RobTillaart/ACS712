@@ -71,18 +71,21 @@ It defaults a 20 A type sensor, which is defined by the default value of mVperAm
 Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum output of the internal ADC.
 The defaults are based upon an Arduino UNO.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
-- **int mA_AC(float frequency = 50)** blocks ~21 ms (depending on the frequency) to sample a whole 50 or 60 Hz period.
+- **int mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms (depending on the frequency and cycles of course) to sample a whole 50 or 60 Hz period.
 The function returns the AC current in mA.
 Its working is based upon multiplying the point2point value by the FormFactor.
 Since version 0.2.2 frequencies other integer values than 50 and 60 are supported.
 Note that the lower the frequency, the longer the blocking period of a function call.
 Since version 0.2.3 floating point frequencies are supported to tune even better.
-- **float mA_AC_sampling(float frequency = 50)** blocks ~21 ms (depending on the frequency) to sample a whole period.
+Since version 0.2.8 the parameter cycles allow to average over a number of cycles.
+- **float mA_AC_sampling(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms (depending on the frequency) to sample a whole period.
 The function returns the AC current in mA. (Note it returns a float).
 Its working is based upon sampling a full period and take the square root of the average sumSquared.
-This function is intended for signals with unknown Form Factor.  
-- **int mA_DC()** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
+This function is intended for signals with unknown Form Factor.
+Since version 0.2.8 the parameter cycles allow to average over a number of cycles.
+- **int mA_DC(uint16_t cycles = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 A negative value indicates the current flows in the opposite direction.
+Since version 0.2.8 the parameter cycles allow to average over a number of cycles.
 
 
 #### Resolution ACS712

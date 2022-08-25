@@ -45,17 +45,17 @@ class ACS712
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.
     //  works with point2point level and Form Factor.
     //  lower frequencies block longer.
-    int      mA_AC(float frequency = ACS712_DEFAULT_FREQ);
+    int      mA_AC(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
 
     //  returns mA
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.
     //  works with sampling.
     //  lower frequencies block longer.
-    float    mA_AC_sampling(float frequency = ACS712_DEFAULT_FREQ);
+    float    mA_AC_sampling(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
 
     //  returns mA
     //  blocks < 1 ms
-    int      mA_DC();
+    int      mA_DC(uint16_t samples = 1);
 
 
     //  midPoint functions
