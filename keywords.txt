@@ -27,6 +27,8 @@ detectFrequency	KEYWORD2
 setMicrosAdjust	KEYWORD2
 getMicrosAdjust	KEYWORD2
 
+getAmperePerStep	KEYWORD2
+
 
 # Constants (LITERAL1)
 ACS712_LIB_VERSION	LITERAL1

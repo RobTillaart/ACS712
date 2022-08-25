@@ -108,8 +108,8 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
 
 float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
 {
-  uint32_t period     = round(1000000UL / frequency);
-  
+  uint32_t period = round(1000000UL / frequency);
+
   float sum = 0;
 
   for (uint16_t i = 0; i < cycles; i++)
@@ -121,12 +121,12 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     while (micros() - start < period)
     {
       samples++;
-      float current = analogRead(_pin) - _midPoint;
+      float current = ((int)analogRead(_pin)) - _midPoint;
       sumSquared += (current * current);
     }
     sum += sqrt(sumSquared / samples);
   }
-  float mA = 1000.0 * sum  * _AmperePerStep/ cycles;
+  float mA = 1000.0 * sum * _AmperePerStep/ cycles;
   return mA;
 }
 
