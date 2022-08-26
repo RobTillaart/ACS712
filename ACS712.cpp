@@ -57,7 +57,10 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
 
   if (cycles == 0) cycles = 1;
   float sum = 0;
-  
+
+  //  remove expensive float operation from loop.
+  uint16_t zeroLevel = round(_noisemV/_mVperStep);
+
   for (uint16_t i = 0; i < cycles; i++)
   {
     uint16_t samples = 0;
@@ -65,9 +68,6 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
 
     int _min, _max;
     _min = _max = analogRead(_pin);
-
-    //  remove expensive float operation from loop.
-    uint16_t zeroLevel = round(_noisemV/_mVperStep);
 
     //  find minimum and maximum and count the zero-level "percentage"
     uint32_t start = micros();
@@ -114,6 +114,8 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
   if (cycles == 0) cycles = 1;
   float sum = 0;
 
+  float noiseLevel = _noisemV/_mVperStep;
+
   for (uint16_t i = 0; i < cycles; i++)
   {
     uint16_t samples    = 0;
@@ -124,7 +126,10 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     {
       samples++;
       float current = ((int)analogRead(_pin)) - _midPoint;
-      sumSquared += (current * current);
+      if (abs(current) > noiseLevel)
+      {        
+        sumSquared += (current * current);
+      }
     }
     sum += sqrt(sumSquared / samples);
   }
