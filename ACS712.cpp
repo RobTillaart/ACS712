@@ -81,7 +81,7 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
       //  count zeros
       if (abs(val - _midPoint) <= zeroLevel ) zeros++;
     }
-    int point2point = _max - _min;
+    int peak2peak = _max - _min;
 
     //  automatic determine _formFactor / crest factor
     float D = 0;
@@ -98,8 +98,8 @@ int ACS712::mA_AC(float frequency, uint16_t cycles)
     }
 
     //  value could be partially pre-calculated: C = 1000.0 * 0.5 * _mVperStep / _mVperAmpere;
-    //  return 1000.0 * 0.5 * point2point * _mVperStep * _formFactor / _mVperAmpere);
-    sum += point2point * FF;
+    //  return 1000.0 * 0.5 * peak2peak * _mVperStep * _formFactor / _mVperAmpere);
+    sum += peak2peak * FF;
   }
   float mA = 500.0 * sum * _AmperePerStep/ cycles;
 

@@ -73,7 +73,7 @@ The defaults are based upon an Arduino UNO.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
 - **int mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms (depending on the frequency and cycles of course) to sample a whole 50 or 60 Hz period.
 The function returns the AC current in mA.
-Its working is based upon multiplying the point2point value by the FormFactor.
+Its working is based upon multiplying the peak2peak value by the FormFactor.
 Since version 0.2.2 frequencies other integer values than 50 and 60 are supported.
 Note that the lower the frequency, the longer the blocking period of a function call.
 Since version 0.2.3 floating point frequencies are supported to tune even better.
@@ -254,7 +254,7 @@ The examples show the basic working of the functions.
 
 #### Could
 
-- do we need a **int point2point(float frequency)** function for AC. 
+- do we need a **int peak2peak(float frequency)** function for AC. 
   - Is technically a part of mA_AC() already.  
   - Needs extra global variables, which are slower than local ones  
   - Or just cache the last p2p value?

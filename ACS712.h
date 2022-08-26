@@ -43,7 +43,7 @@ class ACS712
 
     //  returns mA
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.
-    //  works with point2point level and Form Factor.
+    //  works with peak2peak level and Form Factor.
     //  lower frequencies block longer.
     int      mA_AC(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
 
@@ -95,7 +95,7 @@ class ACS712
   private:
     uint8_t   _pin;
     float     _mVperStep;
-    float     _formFactor;    //  point2point -> RMS
+    float     _formFactor;    //  peak2peak -> RMS
     float     _mVperAmpere;
     float     _AmperePerStep;
     int       _midPoint;
@@ -103,6 +103,14 @@ class ACS712
     float     _microsAdjust = 1.0;  //  0.9986
 };
 
+
+// simulate analogRead() - develop only -
+// static int aRead(uint8_t pin)
+// {
+  // float t = micros();
+  // float value = 515 + 50 * sin(t * PI / 180.0);
+  // return value;
+// }
 
 // -- END OF FILE --
 
