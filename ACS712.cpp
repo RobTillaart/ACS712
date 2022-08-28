@@ -33,9 +33,8 @@
 //                     improve documentation
 //
 //  0.3.0  2022-08-XX  return midPoint value in MP functions.
-//                     midPoint becomes a float.
 //                     float return type for mA() functions
-//                     add float peak2peak(freq, cycles)
+//                     add float mA_peak2peak(freq, cycles)
 //                     add debug getMinimum(), getmaximum();
 //                     update Readme.md
 
@@ -57,7 +56,7 @@ ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmper
 
 
 //  MEASUREMENTS
-float ACS712::peak2peak(float frequency, uint16_t cycles)
+float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
 {
   uint16_t period  = round(1000000UL / frequency);
 
@@ -190,9 +189,13 @@ float ACS712::mA_DC(uint16_t cycles)
 
 
 //  CALIBRATION MIDPOINT
-void ACS712::setMidPoint(uint16_t midPoint)
+uint16_t ACS712::setMidPoint(uint16_t midPoint)
 {
+  //  TODO add test 
+  //  what should one do ?
+  //  if(midPoint > maxADC) return 0xFFFF 
   _midPoint = midPoint;
+  return _midPoint;
 };
 
 
@@ -363,31 +366,31 @@ float ACS712::getMicrosAdjust()
 //  DEBUG
 uint16_t ACS712::getMinimum(uint16_t milliSeconds)
 {
-  uint16_t m = analogRead(_pin);
+  uint16_t minimum = analogRead(_pin);
 
   //  find minimum
   uint32_t start = millis();
   while (millis() - start < milliSeconds)
   {
-    uint16_t val = analogRead(_pin);
-    if (val < m) m = val;
+    uint16_t value = analogRead(_pin);
+    if (value < minimum) minimum = value;
   }
-  return m;
+  return minimum;
 }
 
 
 uint16_t ACS712::getMaximum(uint16_t milliSeconds)
 {
-  uint16_t m = analogRead(_pin);
+  uint16_t maximum = analogRead(_pin);
 
   //  find minimum
   uint32_t start = millis();
   while (millis() - start < milliSeconds)
   {
-    uint16_t val = analogRead(_pin);
-    if (val > m) m = val;
+    uint16_t value = analogRead(_pin);
+    if (value > maximum) maximum = value;
   }
-  return m;
+  return maximum;
 }
 
 

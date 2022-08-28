@@ -16,10 +16,11 @@ Library for the ACS712 Current Sensor - 5A, 20A, 30A.
 The ACS712 is a chip to measure current, both AC or DC. The chip has an
 analogue output that provides a voltage that is linear with the current.
 The ACS712 library supports only a built in ADC by means of **analogRead()**.
-There are 3 core functions:
+There are 4 core functions:
 
-- **int mA_DC(cycles = 1)**
-- **int mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any
+- **float mA_peak2peak(frequency = 50, cycles = 1)**
+- **float mA_DC(cycles = 1)**
+- **float mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any
 value but typically to 50 or 60 Hz.
 - **float mA_AC_sampling(frequency = 50, cycles = 1)** 
 
@@ -78,7 +79,7 @@ It defaults a 20 A type sensor, which is defined by the default value of mVperAm
 Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum output of the internal ADC.
 The defaults are based upon an Arduino UNO, 10 bits ADC.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
-- **int mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
+- **float mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
 Note that a lower frequency, or more cycles, will increase the blocking period.
 The function returns the AC current in mA.
 Its working is based upon multiplying the peak2peak value by the FormFactor.
@@ -90,7 +91,7 @@ The function returns the AC current in mA. (Note it returns a float).
 Its working is based upon sampling a full period and take the square root of the average sumSquared.
 This function is intended for signals with unknown Form Factor.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
-- **int mA_DC(uint16_t cycles = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
+- **float mA_DC(uint16_t cycles = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 A negative value indicates the current flows in the opposite direction.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
 
@@ -103,11 +104,22 @@ A negative value indicates the current flows in the opposite direction.
 |  20 A    |  100     |  ~100 mA    |  ~25.00 mA  |  ~1.54 mA   |
 |  30 A    |  66      |  ~150 mA    |  ~37.50 mA  |  ~2.31 mA   |
 
+TODO check
+
+
+#### Resolution ACS758
+
+|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |
+|:---------|:--------:|:-----------:|:-----------:|:-----------:|
+|  50 A    |  40      |   ~8.18 mA  |   ~2.05 mA  |  ~ 0.128mA  |
+
+TODO check
+
 
 #### Midpoint
 
 - **void setMidPoint(uint16_t midPoint)** sets midpoint for the ADC conversion.
-- **void autoMidPoint(float frequency = 50, uint16_t cycles = 1)** Auto midPoint, 
+- **uint16_t autoMidPoint(float frequency = 50, uint16_t cycles = 1)** Auto midPoint, 
 assuming zero DC current or any AC current. 
 Note the function blocks for at least 2 periods. 
 By increase the number of cycles it averages multiple measurements, possibly getting a better midPoint.
@@ -115,8 +127,10 @@ This function is mandatory for measuring AC.
   - 0.2.2 frequencies other than 50 and 60 are supported.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
 - **uint16_t getMidPoint()** read the value set / determined.
-- **void incMidPoint()** manual increase midpoint, e.g. useful in an interactive application.
-- **void decMidPoint()** manual decrease midpoint.
+- **uint16_t incMidPoint()** manual increase midpoint, e.g. useful in an interactive application.
+- **uint16_t decMidPoint()** manual decrease midpoint.
+
+Functions now all return actual midPoint.
 
 
 #### Form factor 
@@ -247,30 +261,28 @@ The examples show the basic working of the functions.
 
 #### Should - 0.3.x
 
-- midPoint need to be a float so it can be set more exact.
+- investigate noise suppression  (0.3.1)
+- external history file = changelog.md
+- check resolution tables (what is the formula)
+
+
+#### Could
+
+- merge **mA_AC()** and **mA_AC_sampling()** into one. (0.4.0)
+  - or remove worst one
+- midPoint can be a float so it can be set more exact.
+  - extra precision is smaller than noise?
+- ACS712X class with external ADC ( 16 or even 24 bit)
+  - keep interface alike?
 - investigate blocking calls:
   - **mA_AC()** blocks for about 20 ms at 50 Hz.
   This might affect task scheduling on a ESP32. Needs to be investigated. 
   Probably need a separate thread that wakes up when new analogRead is available?
   - RTOS specific class?
   - **detectFrequency(float)** blocks pretty long.
-- should cycles be an uint8_t ?
-- investigate noise suppression  (0.3.1)
+- **setMidPoint()** test valid value < maxADC?
+- other set functions also a range check?
 
-
-#### Could
-
-- do we need a **int peak2peak(float frequency)** function for AC. 
-  - Is technically a part of mA_AC() already.  
-  - Needs extra global variables, which are slower than local ones  
-  - Or just cache the last p2p value?
-  - function **measure_AC()** + getters?   
-  - ==> breaking interface ==> 0.4.0 ?.
-- ACS712X class with external ADC ( 16 or even 24 bit)
-  - keep interface alike?
-- external history file = changelog.md
-- Should the FormFactor not be just a parameter of **mA_AC()**
-  it is the only function using it.
 
 #### Won't
 
@@ -284,5 +296,7 @@ The examples show the basic working of the functions.
 - Should the FormFactor not be just a parameter of **mA_AC()**
   - it is the only function using it.
   - No, 
-
-
+- Should the FormFactor not be just a parameter of **mA_AC()**
+  it is the only function using it. ==> No unnecessary breaking API
+- should cycles be an uint8_t ?
+  - No, uint16 allows averaging in minutes range uint8_t just ~5 seconds

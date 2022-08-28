@@ -41,7 +41,7 @@ class ACS712
     ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperAmpere = 100);
 
    //   returns mA peak2peak current.
-   float peak2peak(float frequency, uint16_t cycles);
+   float mA_peak2peak(float frequency, uint16_t cycles);
 
     //  returns mA
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.
@@ -61,8 +61,8 @@ class ACS712
 
 
     //  midPoint functions
-    //  set reference point for both DC and AC
-    void     setMidPoint(uint16_t midPoint);
+    //  set reference point (raw ADC) for both DC and AC
+    uint16_t setMidPoint(uint16_t midPoint);
     uint16_t getMidPoint();
     uint16_t incMidPoint();
     uint16_t decMidPoint();

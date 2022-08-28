@@ -101,15 +101,15 @@ unittest(test_midPoint)
 
   // loop with micros and a lot of analogReads - not possible
   // ACS.autoMidPoint(50);
-  // float amp50 = ACS.getMidPoint();
+  // uint16_t amp50 = ACS.getMidPoint();
   // assertEqual(0, amp50);
   // 
   // ACS.autoMidPoint(60);
-  // float amp60 = ACS.getMidPoint();
+  // uint16_t amp60 = ACS.getMidPoint();
   // assertEqual(0, amp60);
 
   ACS.setMidPoint(1000);
-  float amp = ACS.getMidPoint();
+  uint16_t amp = ACS.getMidPoint();
   assertEqual(1000, amp);
 
   ACS.incMidPoint();
