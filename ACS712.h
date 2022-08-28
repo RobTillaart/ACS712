@@ -94,6 +94,11 @@ class ACS712
     void     setMicrosAdjust(float factor = 1.0);
     float    getMicrosAdjust();
 
+    //  DEBUG
+    //  ms = milliseconds.
+    uint16_t getMinimum(uint16_t ms = 20);
+    uint16_t getMaximum(uint16_t ms = 20);
+
 
   private:
     uint8_t   _pin;
@@ -101,7 +106,7 @@ class ACS712
     float     _formFactor;    //  peak2peak -> RMS
     float     _mVperAmpere;
     float     _mAPerStep;
-    float     _midPoint;
+    uint16_t  _midPoint;
     uint8_t   _noisemV;
     float     _microsAdjust = 1.0;  //  0.9986
 };

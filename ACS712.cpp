@@ -33,7 +33,10 @@
 //                     improve documentation
 //
 //  0.3.0  2022-08-XX  return midPoint value in MP functions.
+//                     midPoint becomes a float.
 //                     float return type for mA() functions
+//                     add float peak2peak(freq, cycles)
+//                     add debug getMinimum(), getmaximum();
 //                     update Readme.md
 
 
@@ -179,7 +182,7 @@ float ACS712::mA_DC(uint16_t cycles)
   float sum = 0;
   for (uint16_t i = 0; i < cycles; i++)
   {
-    sum += analogRead(_pin) - _midPoint;
+    sum += ((int)analogRead(_pin)) - _midPoint;
   }
   float mA = sum * _mAPerStep / cycles;
   return mA;
@@ -355,6 +358,37 @@ float ACS712::getMicrosAdjust()
 {
   return _microsAdjust;
 };
+
+
+//  DEBUG
+uint16_t ACS712::getMinimum(uint16_t ms)
+{
+  int _min = analogRead(_pin);
+
+  //  find minimum
+  uint32_t start = millis();
+  while (millis() - start < ms)
+  {
+    int val = analogRead(_pin);
+    if (val < _min) _min = val;
+  }
+  return min;
+}
+
+
+uint16_t ACS712::getMaximum(uint16_t ms)
+{
+  int _min = analogRead(_pin);
+
+  //  find minimum
+  uint32_t start = millis();
+  while (millis() - start < ms)
+  {
+    int val = analogRead(_pin);
+    if (val > _max) _max = val;
+  }
+  return min;
+}
 
 
 // -- END OF FILE --

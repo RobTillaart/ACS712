@@ -36,9 +36,9 @@ This factor depends heavily on the signal form, hence its name.
 For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 See **Form factor** below.
 
-Note to make precise measurements, the power of both the ACS712 and the ADC of the processor
-should be as stable as possible. 
-That would improve stability of the midpoint and minimizes the noise.
+Note to make precise measurements, the power of both the ACS712 and the ADC of
+the processor should be as stable as possible. 
+That would improve the stability of the midpoint and minimizes the noise.
 
 
 #### Compatibles
@@ -247,28 +247,15 @@ The examples show the basic working of the functions.
 
 #### Should - 0.3.x
 
-- fix Form Factor in **mA_AC()**
-  - the value set in **setFormFactor()** is not used!
-- return types
-  - float for **mA_AC()** and **mA_DC()**
-  - actual value for **midPoint()** functions instead of void.
 - midPoint need to be a float so it can be set more exact.
-- **autoMidPoint()** should have cycles parameter too.
 - investigate blocking calls:
   - **mA_AC()** blocks for about 20 ms at 50 Hz.
   This might affect task scheduling on a ESP32. Needs to be investigated. 
   Probably need a separate thread that wakes up when new analogRead is available?
   - RTOS specific class?
   - **detectFrequency(float)** blocks pretty long.
-- pre-calculate **\_AmperePerStep** to remove expensive float division.
-  - should mA per step be more efficient?
-- more testing.
-- add count parameter to **mA_DC(uint8_t count = 1)** to takes multiple
-  readings instead of just one. 
-  When **mA_DC()** returns a float this could improve accuracy a (small) bit.
-- investigate noise suppression
-- update readme.md file
 - should cycles be an uint8_t ?
+- investigate noise suppression  (0.3.1)
 
 
 #### Could
@@ -279,8 +266,6 @@ The examples show the basic working of the functions.
   - Or just cache the last p2p value?
   - function **measure_AC()** + getters?   
   - ==> breaking interface ==> 0.4.0 ?.
-- int **getMax()** idem
-- int **getMin()** idem
 - ACS712X class with external ADC ( 16 or even 24 bit)
   - keep interface alike?
 - external history file = changelog.md
