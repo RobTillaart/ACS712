@@ -126,10 +126,11 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     {
       samples++;
       float current = ((int)analogRead(_pin)) - _midPoint;
-      if (abs(current) > noiseLevel)
-      {        
-        sumSquared += (current * current);
-      }
+      sumSquared += (current * current);
+      // if (abs(current) > noiseLevel)
+      // {        
+      //   sumSquared += (current * current);
+      // }
     }
     sum += sqrt(sumSquared / samples);
   }
