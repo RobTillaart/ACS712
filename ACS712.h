@@ -65,7 +65,7 @@ class ACS712
     void     incMidPoint();
     void     decMidPoint();
     //  Auto midPoint, assuming zero DC current or any AC current
-    void     autoMidPoint(float frequency = ACS712_DEFAULT_FREQ);
+    void     autoMidPoint(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
 
 
     //  Form Factor is also known as crest factor;

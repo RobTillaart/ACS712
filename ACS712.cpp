@@ -182,22 +182,29 @@ void ACS712::decMidPoint()
 //  configure by sampling for 2 cycles of AC
 //  Also works for DC as long as no current flowing
 //  note this is blocking!
-void ACS712::autoMidPoint(float frequency)
+void ACS712::autoMidPoint(float frequency, uint16_t cycles)
 {
   uint16_t twoPeriods = round(2000000UL / frequency);
 
-  uint32_t total   = 0;
+  if (cycles == 0) cycles = 1;
+
+  uint32_t total = 0;
   uint32_t samples = 0;
-  uint32_t start   = micros();
-  while (micros() - start < twoPeriods)
+  for (uint16_t i = 0; i < cycles; i++)
   {
-    uint16_t reading = analogRead(_pin);
-    total += reading;
-    samples++;
-    //  Delaying ensures we won't overflow since we'll perform a maximum of 40,000 reads
-    delayMicroseconds(1);
+    uint32_t subTotal = 0
+    uint32_t start    = micros();
+    while (micros() - start < twoPeriods)
+    {
+      uint16_t reading = analogRead(_pin);
+      subTotal += reading;
+      samples++;
+      //  Delaying ensures we won't overflow since we'll perform a maximum of 40,000 reads @ 50 Hz.
+      delayMicroseconds(1);
+    }
+    total += (subTotal/samples);
   }
-  _midPoint = total / samples;
+  _midPoint = total / cycles;
 }
 
 
