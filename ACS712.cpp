@@ -114,7 +114,7 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
   if (cycles == 0) cycles = 1;
   float sum = 0;
 
-  float noiseLevel = _noisemV/_mVperStep;
+  // float noiseLevel = _noisemV/_mVperStep;
 
   for (uint16_t i = 0; i < cycles; i++)
   {
