@@ -41,7 +41,7 @@ class ACS712
     ACS712(uint8_t analogPin, float volts = 5.0, uint16_t maxADC = 1023, float mVperAmpere = 100);
 
    //   returns mA peak2peak current.
-   float mA_peak2peak(float frequency, uint16_t cycles);
+   float mA_peak2peak(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
 
     //  returns mA
     //  blocks 20-21 ms to sample a whole 50 or 60 Hz period.

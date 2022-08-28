@@ -45,28 +45,28 @@
 //  CONSTRUCTOR
 ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmpere)
 {
-  _pin           = analogPin;
-  _mVperStep     = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
-  _mVperAmpere   = mVperAmpere;
-  _mAPerStep     = 1000.0 * _mVperStep / _mVperAmpere;
-  _formFactor    = ACS712_FF_SINUS;
-  _midPoint      = maxADC / 2;
-  _noisemV       = ACS712_DEFAULT_NOISE;    //  21mV according to datasheet
+  _pin         = analogPin;
+  _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
+  _mVperAmpere = mVperAmpere;
+  _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
+  _formFactor  = ACS712_FF_SINUS;
+  _midPoint    = maxADC / 2;
+  _noisemV     = ACS712_DEFAULT_NOISE;    //  21mV according to datasheet
 }
 
 
 //  MEASUREMENTS
 float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
 {
-  uint16_t period  = round(1000000UL / frequency);
+  uint16_t period = round(1000000UL / frequency);
 
   if (cycles == 0) cycles = 1;
   float sum = 0;
   
   for (uint16_t i = 0; i < cycles; i++)
   {
-    int _min, _max;
-    _min = _max = analogRead(_pin);
+    int minimum, maximum;
+    minimum = maximum = analogRead(_pin);
 
     //  find minimum and maximum
     uint32_t start = micros();
@@ -74,10 +74,10 @@ float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
     {
       int val = analogRead(_pin);
       //  determine extremes
-      if (val < _min) _min = val;
-      else if (val > _max) _max = val;
+      if (val < minimum) minimum = val;
+      else if (val > maximum) maximum = val;
     }
-    sum += (_max - _min);
+    sum += (maximum - minimum);
   }
   float peak2peak = sum * _mAPerStep / cycles;
 
@@ -92,7 +92,7 @@ float ACS712::mA_AC(float frequency, uint16_t cycles)
   if (cycles == 0) cycles = 1;
   float sum = 0;
 
-  //  remove expensive float operation from loop.
+  //  remove float operation from loop.
   uint16_t zeroLevel = round(_noisemV/_mVperStep);
 
   for (uint16_t i = 0; i < cycles; i++)
@@ -207,6 +207,8 @@ uint16_t ACS712::getMidPoint()
 
 uint16_t ACS712::incMidPoint()
 {
+  //  TODO - check valid value?
+  //  needs MAXADC which is not kept
   _midPoint += 1;
   return _midPoint;
 };

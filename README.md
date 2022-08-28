@@ -20,8 +20,7 @@ There are 4 core functions:
 
 - **float mA_peak2peak(frequency = 50, cycles = 1)**
 - **float mA_DC(cycles = 1)**
-- **float mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any
-value but typically to 50 or 60 Hz.
+- **float mA_AC(frequency = 50, cycles = 1)**
 - **float mA_AC_sampling(frequency = 50, cycles = 1)** 
 
 The parameter cycles is used to do measure multiple cycles and average them.
@@ -42,18 +41,19 @@ the processor should be as stable as possible.
 That would improve the stability of the midpoint and minimizes the noise.
 
 
-#### Compatibles
+#### Resolution
 
-To investigate.
+|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |
+|:---------|:--------:|:-----------:|:-----------:|:-----------:|
+|    5 A   |    185   |   26.4 mA   |    6.6 mA   |   0.41 mA   |
+|   20 A   |    100   |   48.9 mA   |   12.2 mA   |   0.76 mA   |
+|   30 A   |     66   |   74.1 mA   |   18.5 mA   |   1.16 mA   |
 
-Robodyn has breakout for ACS758 - 50A,
-
-Allegromicro offer a lot of different ones, that might be compatible.
-
-https://www.allegromicro.com/en/products/sense/current-sensor-ics/current-sensors-innovations
-
-If you have tested a compatible sensor, please share your experiences.
-(can be done by opening an issue to update documentation)
+```cpp
+getmAPerStep();
+mA LSB = (5000 mV / maxADC) / mVperA * 1000.0;
+mA LSB = (1000 * 5000 mV) / (maxADC * mVperA);
+```
 
 
 #### Tests
@@ -70,6 +70,37 @@ The library is at least confirmed to work with the following boards:
 Please let me know of other working platforms / processors.
 
 
+
+## Compatibles
+
+Robodyn has a breakout for ACS758 - 50 A. - See resolution below.
+
+Allegromicro offers a lot of different current sensors, that might be compatible.
+These include bidirectional and unidirectional. 
+These latter seem to be for DC only.
+
+https://www.allegromicro.com/en/products/sense/current-sensor-ics/current-sensors-innovations
+
+If you have tested a compatible sensor, please share your experiences.
+(can be done by opening an issue to update documentation)
+
+
+#### Resolution ACS758
+
+Not tested, but seems compatible - same formula as above
+
+|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |  directional  |
+|:---------|:--------:|:-----------:|:-----------:|:-----------:|:-------------:|
+|   50 A   |     40   |  122.2 mA   |   30.5 mA   |   1.91 mA   |     bi        |
+|   50 A   |     60   |   81.5 mA   |   20.3 mA   |   1.27 mA   |     uni       |
+|  100 A   |     20   |  244.4 mA   |   61.0 mA   |   3.81 mA   |     bi        |
+|  100 A   |     40   |  122.2 mA   |   30.5 mA   |   1.91 mA   |     uni       |
+|  150 A   |   13.3   |  367.5 mA   |   91.8 mA   |   5.74 mA   |     bi        |
+|  150 A   |   26.7   |  183.1 mA   |   45.7 mA   |   2.86 mA   |     uni       |
+|  200 A   |     10   |  488.8 mA   |  122.1 mA   |   7.63 mA   |     bi        |
+|  200 A   |     20   |  244.4 mA   |   61.0 mA   |   3.81 mA   |     uni       |
+
+
 ## Interface
 
 #### Base
@@ -79,6 +110,8 @@ It defaults a 20 A type sensor, which is defined by the default value of mVperAm
 Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum output of the internal ADC.
 The defaults are based upon an Arduino UNO, 10 bits ADC.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
+- **float mA_peak2peak(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
+Returns the peak to peak current, can be used to determine form factor..
 - **float mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
 Note that a lower frequency, or more cycles, will increase the blocking period.
 The function returns the AC current in mA.
@@ -91,34 +124,16 @@ The function returns the AC current in mA. (Note it returns a float).
 Its working is based upon sampling a full period and take the square root of the average sumSquared.
 This function is intended for signals with unknown Form Factor.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
-- **float mA_DC(uint16_t cycles = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
+- **float mA_DC(uint16_t samples = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 A negative value indicates the current flows in the opposite direction.
-  - 0.2.8 the parameter cycles allow to average over a number of cycles.
-
-
-#### Resolution ACS712
-
-|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |
-|:---------|:--------:|:-----------:|:-----------:|:-----------:|
-|  5 A     |  185     |   ~25 mA    |  ~06.25 mA  |  ~0.38 mA   |
-|  20 A    |  100     |  ~100 mA    |  ~25.00 mA  |  ~1.54 mA   |
-|  30 A    |  66      |  ~150 mA    |  ~37.50 mA  |  ~2.31 mA   |
-
-TODO check
-
-
-#### Resolution ACS758
-
-|  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |
-|:---------|:--------:|:-----------:|:-----------:|:-----------:|
-|  50 A    |  40      |   ~8.18 mA  |   ~2.05 mA  |  ~ 0.128mA  |
-
-TODO check
+  - 0.2.8 the parameter samples allow to average over a number of samples.
 
 
 #### Midpoint
 
-- **void setMidPoint(uint16_t midPoint)** sets midpoint for the ADC conversion.
+Since 0.3.0 all midPoint functions return actual midPoint.
+
+- **uint16_t setMidPoint(uint16_t midPoint)** sets midpoint for the ADC conversion.
 - **uint16_t autoMidPoint(float frequency = 50, uint16_t cycles = 1)** Auto midPoint, 
 assuming zero DC current or any AC current. 
 Note the function blocks for at least 2 periods. 
@@ -129,8 +144,6 @@ This function is mandatory for measuring AC.
 - **uint16_t getMidPoint()** read the value set / determined.
 - **uint16_t incMidPoint()** manual increase midpoint, e.g. useful in an interactive application.
 - **uint16_t decMidPoint()** manual decrease midpoint.
-
-Functions now all return actual midPoint.
 
 
 #### Form factor 
@@ -143,7 +156,7 @@ Must typical be between 0.0 and 1.0, see constants below.
 
 The library has a number of predefined form factors:
 
-|  definition          | value         | approx | notes   |
+|  definition          | value         | approx |  notes  |
 |:---------------------|:--------------|:------:|:--------|
 | ACS712_FF_SQUARE     | 1.0           | 1.000  |         |
 | ACS712_FF_SINUS      | 1.0 / sqrt(2) | 0.707  | default |
@@ -156,10 +169,14 @@ This can help to improve the quality of your measurements.
 
 Please let me know if other crest factors need to be added.
 
-Since version 0.3.0 the Form Factor can be determined by 
+Since version 0.3.0 the Form Factor can be determined by
+
 ```cpp
-float FF = 2.0 * mA_AC_sampling() / ACS.peak2peak();
+float FF = 2.0 * mA_AC_sampling() / ACS.mA_peak2peak();
 ```
+
+See - ACS712_20_determine_form_factor.ino
+
 
 
 #### Noise
@@ -281,6 +298,8 @@ The examples show the basic working of the functions.
   - RTOS specific class?
   - **detectFrequency(float)** blocks pretty long.
 - **setMidPoint()** test valid value < maxADC?
+  - **incrMidPoint()** idem.
+  - **autoMP()** ??
 - other set functions also a range check?
 
 
