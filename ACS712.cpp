@@ -189,10 +189,10 @@ void ACS712::autoMidPoint(float frequency, uint16_t cycles)
   if (cycles == 0) cycles = 1;
 
   uint32_t total = 0;
-  uint32_t samples = 0;
   for (uint16_t i = 0; i < cycles; i++)
   {
-    uint32_t subTotal = 0
+    uint32_t subTotal = 0;
+    uint32_t samples  = 0;
     uint32_t start    = micros();
     while (micros() - start < twoPeriods)
     {

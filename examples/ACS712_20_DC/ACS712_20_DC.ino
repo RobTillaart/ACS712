@@ -29,6 +29,7 @@ void setup()
   Serial.println(ACS712_LIB_VERSION);
 
   ACS.autoMidPoint();
+  //  Serial.println(ACS.getMidPoint());
 }
 
 
@@ -41,4 +42,3 @@ void loop()
 
 
 // -- END OF FILE --
-
