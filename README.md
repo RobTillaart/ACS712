@@ -19,7 +19,7 @@ The ACS712 library supports only a built in ADC by means of **analogRead()**.
 There are 3 core functions:
 
 - **int mA_DC(cycles = 1)**
-- **int mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any 
+- **int mA_AC(frequency = 50, cycles = 1)** The frequency can be set to any
 value but typically to 50 or 60 Hz.
 - **float mA_AC_sampling(frequency = 50, cycles = 1)** 
 
@@ -36,9 +36,9 @@ This factor depends heavily on the signal form, hence its name.
 For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 See **Form factor** below.
 
-Note to make precise measurements, the power of both the ACS712 and the ADC of 
-the processor should be as stable as possible.
-That would improve the stability of the midpoint and minimizes the noise.
+Note to make precise measurements, the power of both the ACS712 and the ADC of the processor
+should be as stable as possible. 
+That would improve stability of the midpoint and minimizes the noise.
 
 
 #### Compatibles
@@ -141,6 +141,11 @@ and determine / verify the form factor of the signal.
 This can help to improve the quality of your measurements.
 
 Please let me know if other crest factors need to be added.
+
+Since version 0.3.0 the Form Factor can be determined by 
+```cpp
+float FF = 2.0 * mA_AC_sampling() / ACS.peak2peak();
+```
 
 
 #### Noise
@@ -291,4 +296,8 @@ The examples show the basic working of the functions.
   - needs a 24 bit ADC 
   - default noise is already ~21mV...
   - => not feasible in normal setup.
+- Should the FormFactor not be just a parameter of **mA_AC()**
+  - it is the only function using it.
+  - No, 
+
 
