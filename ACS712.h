@@ -95,9 +95,8 @@ class ACS712
     float    getMicrosAdjust();
 
     //  DEBUG
-    //  ms = milliseconds.
-    uint16_t getMinimum(uint16_t ms = 20);
-    uint16_t getMaximum(uint16_t ms = 20);
+    uint16_t getMinimum(uint16_t milliSeconds = 20);
+    uint16_t getMaximum(uint16_t milliSeconds = 20);
 
 
   private:

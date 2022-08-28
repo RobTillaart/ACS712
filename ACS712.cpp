@@ -361,33 +361,33 @@ float ACS712::getMicrosAdjust()
 
 
 //  DEBUG
-uint16_t ACS712::getMinimum(uint16_t ms)
+uint16_t ACS712::getMinimum(uint16_t milliSeconds)
 {
-  int _min = analogRead(_pin);
+  uint16_t m = analogRead(_pin);
 
   //  find minimum
   uint32_t start = millis();
-  while (millis() - start < ms)
+  while (millis() - start < milliSeconds)
   {
-    int val = analogRead(_pin);
-    if (val < _min) _min = val;
+    uint16_t val = analogRead(_pin);
+    if (val < m) m = val;
   }
-  return min;
+  return m;
 }
 
 
-uint16_t ACS712::getMaximum(uint16_t ms)
+uint16_t ACS712::getMaximum(uint16_t milliSeconds)
 {
-  int _min = analogRead(_pin);
+  uint16_t m = analogRead(_pin);
 
   //  find minimum
   uint32_t start = millis();
-  while (millis() - start < ms)
+  while (millis() - start < milliSeconds)
   {
-    int val = analogRead(_pin);
-    if (val > _max) _max = val;
+    uint16_t val = analogRead(_pin);
+    if (val > m) m = val;
   }
-  return min;
+  return m;
 }
 
 
