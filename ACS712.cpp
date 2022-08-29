@@ -66,7 +66,8 @@ float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
   for (uint16_t i = 0; i < cycles; i++)
   {
     int minimum, maximum;
-    minimum = maximum = analogRead(_pin);
+    //  Better than using midPoint
+    minimum = maximum = analogRead(_pin);  
 
     //  find minimum and maximum
     uint32_t start = micros();
@@ -120,7 +121,6 @@ float ACS712::mA_AC(float frequency, uint16_t cycles)
     //  automatic determine _formFactor / crest factor
     float D = 0;
     float FF = 0;
-    //  TODO uint32_t math?  (zeros * 40) > samples
     if (zeros > samples * 0.025)          //  more than 2% zero's
     {
       D = 1.0 - (1.0 * zeros) / samples;  //  % SAMPLES NONE ZERO
@@ -191,9 +191,8 @@ float ACS712::mA_DC(uint16_t cycles)
 //  CALIBRATION MIDPOINT
 uint16_t ACS712::setMidPoint(uint16_t midPoint)
 {
-  //  TODO add test 
-  //  what should one do ?
-  //  if(midPoint > maxADC) return 0xFFFF 
+  //  TODO - check valid value?
+  //  if (midPoint > _maxADC) return 0xFFFF;
   _midPoint = midPoint;
   return _midPoint;
 };
@@ -208,6 +207,7 @@ uint16_t ACS712::getMidPoint()
 uint16_t ACS712::incMidPoint()
 {
   //  TODO - check valid value?
+  //  if ((midPoint + 1) > _maxADC) return 0xFFFF; 
   //  needs MAXADC which is not kept
   _midPoint += 1;
   return _midPoint;
@@ -216,6 +216,9 @@ uint16_t ACS712::incMidPoint()
 
 uint16_t ACS712::decMidPoint()
 {
+  //  TODO - check valid value?
+  //  if ((midPoint == 0) return 0xFFFF;   #define ACS712_ERR_INVALID_MIDPOINT 0xFFFF
+  //  needs MAXADC which is not kept
   _midPoint -= 1;
   return _midPoint;
 };

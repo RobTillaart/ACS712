@@ -131,13 +131,19 @@ A negative value indicates the current flows in the opposite direction.
 
 #### Midpoint
 
+The midPoint is the (raw) zero-reference for all current measurements.
+It is defined in steps of the ADC and is typical around half the **MAX_ADC** value defined 
+in the constructor. So for a 10 bit ADC a number between 500..525 is most likely.
+ 
 Since 0.3.0 all midPoint functions return actual midPoint.
 
 - **uint16_t setMidPoint(uint16_t midPoint)** sets midpoint for the ADC conversion.
 - **uint16_t autoMidPoint(float frequency = 50, uint16_t cycles = 1)** Auto midPoint, 
 assuming zero DC current or any AC current. 
-Note the function blocks for at least 2 periods. 
-By increase the number of cycles it averages multiple measurements, possibly getting a better midPoint.
+The function takes the average of many measurements during one or more full cycles.
+Note the function therefore blocks for at least 2 periods. 
+By increasing the number of cycles the function averages even more measurements, 
+possibly resulting in a better midPoint. Idea is that noise will average out. 
 This function is mandatory for measuring AC.
   - 0.2.2 frequencies other than 50 and 60 are supported.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
@@ -145,10 +151,23 @@ This function is mandatory for measuring AC.
 - **uint16_t incMidPoint()** manual increase midpoint, e.g. useful in an interactive application.
 - **uint16_t decMidPoint()** manual decrease midpoint.
 
+Since version 0.3.0 there is another way to determine the midPoint.
+One can use the two debug functions (milliseconds at least a full cycle)
+- **uint16_t getMinimum(uint16_t milliSeconds = 20)**
+- **uint16_t getMaximum(uint16_t milliSeconds = 20)**
+
+and take the average of these two values. In code:
+
+```cpp
+uint16_t midpnt = ACS.setMidPoint((ACS.getMinimum(20) + ACS.getMaximum(20)) / 2);
+```
+See - ACS712_20_AC_midPoint_compare.ino
+
 
 #### Form factor 
 
-Also known as crest factor. Only used for signals measured with **mA_AC()**.
+Form factor is also known as the crest factor. 
+It is only used for signals measured with **mA_AC()**.
 
 - **void setFormFactor(float formFactor = ACS712_FF_SINUS)** manually sets form factor.
 Must typical be between 0.0 and 1.0, see constants below.
@@ -186,6 +205,8 @@ Default = 21 mV.
 - **void setNoisemV(uint8_t noisemV = 21)** set noise level, 
 is used to determine zero level e.g. in the AC measurements with **mA_AC()**.
 - **uint8_t getNoisemV()** returns the set value.
+
+How to improve upon noise is one of the open issues under investigation. 
 
 
 #### mV per Ampere
@@ -255,21 +276,32 @@ After using a voltage divider one need to adjust the mVperAmp.
 **Note:** setting the midPoint correctly is also needed when using a voltage divider.
 
 
+## Disconnect detection
+
+(to be tested)
+
+To detect that the ACS712 is disconnected from the ADC one could connect the 
+analog pin via a pull-down to GND. A pull-up to VCC is also possible.
+Choose the solution that fits your project best. (Think safety).
+
+**mA_DC()** and **mA_AC_sampling()** will report HIGH values (Out of range) when the ACS712 is disconnected.
+The other - peak2peak based functions - will see this as zero current (min == max).
+
+Schema with PULL-UP.
+```
+                 ACS712 OUT
+                     |
+                     |
+   VCC ----[ R1 ]----o       R1 = 1 M ohm.
+                     |
+                     |
+                ADC of processor
+```
+
+The library does not support this "extreme values" detection.
+
+
 ## Operation
-
-With the constructor the parameters **volts** and **maxADC (== steps-1)** of the ADC are set
-together with the **milliVolt per Ampere** value. 
-The last parameter can be adjusted afterwards, e.g. to calibrate this value runtime. 
-Note this parameter affects both AC and DC measurements.
-
-To calibrate the zero level for DC measurements, 5 functions are available to
-adjust the midPoint.
-
-To calibrate the RMS value for AC measurements, 2 functions are available to
-get and set the formFactor.
-
-To calibrate the noise level (used for AC measurements), 2 functions are available to
-get and set the noise in mV.
 
 The examples show the basic working of the functions.
 
@@ -278,19 +310,20 @@ The examples show the basic working of the functions.
 
 #### Should - 0.3.x
 
-- investigate noise suppression  (0.3.1)
+- investigate noise suppression  (0.3.1 or later)
 - external history file = changelog.md
-- check resolution tables (what is the formula)
+- check TODO's in code.
 
 
 #### Could
 
 - merge **mA_AC()** and **mA_AC_sampling()** into one. (0.4.0)
-  - or remove worst one
-- midPoint can be a float so it can be set more exact.
-  - extra precision is smaller than noise?
+  - or remove - depreciate - the worst one
 - ACS712X class with external ADC ( 16 or even 24 bit)
   - keep interface alike?
+  - are these fast enough for e.g. 60 Hz (100 samples in 16 millis?)
+    - **ADS1115** in continuous mode ==> 0.8 samples per millisecond at 16 bit Ideal for **mA-DC()**
+    - **MCP3202** SPI interface ==> up to 100 samples per millisecond !! at 12 bit. Perfect.
 - investigate blocking calls:
   - **mA_AC()** blocks for about 20 ms at 50 Hz.
   This might affect task scheduling on a ESP32. Needs to be investigated. 
@@ -319,3 +352,7 @@ The examples show the basic working of the functions.
   it is the only function using it. ==> No unnecessary breaking API
 - should cycles be an uint8_t ?
   - No, uint16 allows averaging in minutes range uint8_t just ~5 seconds
+- midPoint can be a float so it can be set more exact.
+  - extra precision is max half bit = smaller than noise?
+  - math will be slower during sampling (UNO)
+
