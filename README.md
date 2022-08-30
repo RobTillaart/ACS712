@@ -8,7 +8,7 @@
 
 # ACS712
 
-Library for the ACS712 Current Sensor - 5A, 20A, 30A.
+Library for the ACS712 Current Sensor - 5A, 20A, 30A and compatibles.
 
 
 ## Description
@@ -36,9 +36,12 @@ This factor depends heavily on the signal form, hence its name.
 For a perfect sinus the value is sqrt(2)/2 == 1/sqrt(2).
 See **Form factor** below.
 
-Note to make precise measurements, the power of both the ACS712 and the ADC of
+The **mA_AC_sampling()** calculates the average of the sumSquared of many measurements.
+It should be used when the form factor is not known.
+
+Note to make precise measurements, the power supply of both the ACS712 and the ADC of
 the processor should be as stable as possible. 
-That would improve the stability of the midpoint and minimizes the noise.
+That improves the stability of the midpoint and minimizes the noise.
 
 
 #### Resolution
@@ -54,6 +57,10 @@ getmAPerStep();
 mA LSB = (5000 mV / maxADC) / mVperA * 1000.0;
 mA LSB = (1000 * 5000 mV) / (maxADC * mVperA);
 ```
+
+Although no 16 bit ADC built in are known, it indicates what resolution 
+could be obtained with such an ADC. It triggered the thought for supporting
+external ADC's with this library or a derived version. See future.
 
 
 #### Tests
@@ -73,11 +80,12 @@ Please let me know of other working platforms / processors.
 
 ## Compatibles
 
-Robodyn has a breakout for ACS758 - 50 A. - See resolution below.
+Robodyn has a breakout for the ACS758 - 50 A. - See resolution below.
+This sensor has versions up to 200 Amps, so use with care!
 
 Allegromicro offers a lot of different current sensors, that might be compatible.
 These include bidirectional and unidirectional. 
-These latter seem to be for DC only.
+The unidirectional seem to be for DC only.
 
 https://www.allegromicro.com/en/products/sense/current-sensor-ics/current-sensors-innovations
 
@@ -87,7 +95,7 @@ If you have tested a compatible sensor, please share your experiences.
 
 #### Resolution ACS758
 
-Not tested, but seems compatible - same formula as above
+Not tested, but looks compatible - same formula as above
 
 |  Sensor  |  mVperA  |  LSB 10bit  |  LSB 12bit  |  LSB 16bit  |  directional  |
 |:---------|:--------:|:-----------:|:-----------:|:-----------:|:-------------:|
@@ -115,7 +123,7 @@ Returns the peak to peak current, can be used to determine form factor..
 - **float mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
 Note that a lower frequency, or more cycles, will increase the blocking period.
 The function returns the AC current in mA.
-Its working is based upon multiplying the peak2peak value by the FormFactor.
+Its working is based upon multiplying the peak2peak value by the FormFactor which must be known and set.
   - 0.2.2 frequencies other integer values than 50 and 60 are supported.
   - 0.2.3 floating point frequencies are supported to tune even better.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
@@ -132,8 +140,9 @@ A negative value indicates the current flows in the opposite direction.
 #### Midpoint
 
 The midPoint is the (raw) zero-reference for all current measurements.
-It is defined in steps of the ADC and is typical around half the **MAX_ADC** value defined 
+It is defined in steps of the ADC and is typical around half the **maxADC** value defined 
 in the constructor. So for a 10 bit ADC a number between 500..525 is most likely.
+
  
 Since 0.3.0 all midPoint functions return actual midPoint.
 
@@ -163,10 +172,14 @@ uint16_t midpnt = ACS.setMidPoint((ACS.getMinimum(20) + ACS.getMaximum(20)) / 2)
 ```
 See - ACS712_20_AC_midPoint_compare.ino
 
+The ACS712 has a midPoint level that is specified as  0.5 \* VCC. 
+So **autoMidPoint()** can help indicate voltage deviations for the ACS712. 
+The library does not support this yet.
+
 
 #### Form factor 
 
-Form factor is also known as the crest factor. 
+The form factor is also known as the crest factor. 
 It is only used for signals measured with **mA_AC()**.
 
 - **void setFormFactor(float formFactor = ACS712_FF_SINUS)** manually sets form factor.
@@ -188,7 +201,7 @@ This can help to improve the quality of your measurements.
 
 Please let me know if other crest factors need to be added.
 
-Since version 0.3.0 the Form Factor can be determined by
+Since version 0.3.0 the form factor can be determined by
 
 ```cpp
 float FF = 2.0 * mA_AC_sampling() / ACS.mA_peak2peak();
