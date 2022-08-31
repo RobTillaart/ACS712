@@ -159,7 +159,7 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     while (micros() - start < period)
     {
       samples++;
-      float current = ((int)analogRead(_pin)) - _midPoint;
+      float current = analogRead(_pin) - _midPoint;
       sumSquared += (current * current);
       // if (abs(current) > noiseLevel)
       // {        
@@ -181,7 +181,7 @@ float ACS712::mA_DC(uint16_t cycles)
   float sum = 0;
   for (uint16_t i = 0; i < cycles; i++)
   {
-    sum += ((int)analogRead(_pin)) - _midPoint;
+    sum += (analogRead(_pin) - _midPoint);
   }
   float mA = sum * _mAPerStep / cycles;
   return mA;

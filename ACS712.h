@@ -105,7 +105,7 @@ class ACS712
     float     _formFactor;    //  peak2peak -> RMS
     float     _mVperAmpere;
     float     _mAPerStep;
-    uint16_t  _midPoint;
+    int       _midPoint;
     uint8_t   _noisemV;
     float     _microsAdjust = 1.0;  //  0.9986
 };
