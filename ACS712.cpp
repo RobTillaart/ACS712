@@ -32,7 +32,7 @@
 //                     moved several functions to .cpp
 //                     improve documentation
 //
-//  0.3.0  2022-08-XX  return midPoint value in MP functions.
+//  0.3.0  2022-09-01  return midPoint value in MP functions.
 //                     float return type for mA() functions
 //                     add float mA_peak2peak(freq, cycles)
 //                     add debug getMinimum(), getmaximum();
