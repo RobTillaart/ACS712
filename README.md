@@ -218,8 +218,14 @@ Default = 21 mV.
 - **void setNoisemV(uint8_t noisemV = 21)** set noise level, 
 is used to determine zero level e.g. in the AC measurements with **mA_AC()**.
 - **uint8_t getNoisemV()** returns the set value.
+- **float mVNoiseLevel(float frequency, uint16_t cycles)** determines the mV of noise.
+Measurement should be taken when there is no AC/DC current or a constant DC current. 
+The level will give a (not quantified yet) indication of the accuracy of the measurements.
+A first order indication can be made by comparing it to voltage / 2 of the constructor.
 
-How to improve upon noise is one of the open issues under investigation. 
+How to improve upon noise is one of the open issues under investigation.
+- hardware LOW pass filter (?)
+- software detection and suppressing (?) 
 
 
 #### mV per Ampere

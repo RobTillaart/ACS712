@@ -1,7 +1,7 @@
 //
 //    FILE: ACS712.cpp
 //  AUTHOR: Rob Tillaart, Pete Thompson
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 //    DATE: 2020-08-02
 // PURPOSE: ACS712 library - current measurement
 //
@@ -36,6 +36,8 @@
 //                     float return type for mA() functions
 //                     add float mA_peak2peak(freq, cycles)
 //                     add debug getMinimum(), getmaximum();
+//                     update Readme.md
+//  0.3.1  2022-09-xx  add float mVNoiseLevel(frequency, cycles)
 //                     update Readme.md
 
 
@@ -279,6 +281,14 @@ uint8_t ACS712::getNoisemV()
 {
   return _noisemV;
 };
+
+
+float ACS712::mVNoiseLevel(float frequency, uint16_t cycles)
+{
+  float mA = mA_peak2peak(frequency, cycles);
+  //  divide by 2 as the level is half of the peak to peak range
+  return mA * _mVperAmpere * 0.001 / 2;   
+}
 
 
 //  CALIBRATION mV PER AMP

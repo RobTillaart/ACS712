@@ -2,7 +2,7 @@
 //
 //    FILE: ACS712.h
 //  AUTHOR: Rob Tillaart, Pete Thompson
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 //    DATE: 2020-08-02
 // PURPOSE: ACS712 library - current measurement
 //
@@ -12,7 +12,7 @@
 
 #include "Arduino.h"
 
-#define ACS712_LIB_VERSION        (F("0.3.0"))
+#define ACS712_LIB_VERSION        (F("0.3.1"))
 
 
 //  ACS712_FF_SINUS == 1.0/sqrt(2) == 0.5 * sqrt(2)
@@ -79,7 +79,7 @@ class ACS712
     //  noise defaults 21 datasheet
     void     setNoisemV(uint8_t noisemV = ACS712_DEFAULT_NOISE);
     uint8_t  getNoisemV();
-
+    float    mVNoiseLevel(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);  //  uses mA_peak2peak()
 
     //  Adjusting resolution AC and DC
     void     setmVperAmp(float mVperAmpere);

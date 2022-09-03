@@ -20,6 +20,7 @@ getFormFactor	KEYWORD2
 
 setNoisemV	KEYWORD2
 getNoisemV	KEYWORD2
+mVNoiseLevel	KEYWORD2
 
 setmVperAmp	KEYWORD2
 getmVperAmp	KEYWORD2
@@ -29,6 +30,9 @@ setMicrosAdjust	KEYWORD2
 getMicrosAdjust	KEYWORD2
 
 getAmperePerStep	KEYWORD2
+
+getMinimum	KEYWORD2
+getMaximum	KEYWORD2
 
 
 # Constants (LITERAL1)
