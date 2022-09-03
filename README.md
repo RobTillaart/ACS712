@@ -119,7 +119,10 @@ Volts is the voltage used by the (Arduino) internal ADC. maxADC is the maximum o
 The defaults are based upon an Arduino UNO, 10 bits ADC.
 These two ADC parameters are needed to calculate the voltage output of the ACS712 sensor.
 - **float mA_peak2peak(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
-Returns the peak to peak current, can be used to determine form factor..
+Returns the peak to peak current, can be used to determine form factor.  
+The **mA_peak2peak()** can also be used to measure on a zero current line 
+to get an indication of the lowest detectable current.
+Finally this function is used internally to detect the noiseLevel in mV on a zero current line. 
 - **float mA_AC(float frequency = 50, uint16_t cycles = 1)** blocks ~21 ms to sample a whole 50 or 60 Hz period.
 Note that a lower frequency, or more cycles, will increase the blocking period.
 The function returns the AC current in mA.
@@ -329,7 +332,7 @@ The examples show the basic working of the functions.
 
 #### Should - 0.3.x
 
-- investigate noise suppression  (0.3.1 or later)
+- investigate noise suppression  #21 (0.3.1 or later)
 - external history file = changelog.md
 - check TODO's in code.
 
@@ -353,6 +356,7 @@ The examples show the basic working of the functions.
   - **incrMidPoint()** idem.
   - **autoMP()** ??
 - other set functions also a range check?
+- split the readme.md in multiple documents?
 
 
 #### Won't
