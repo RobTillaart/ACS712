@@ -11,4 +11,4 @@ compile:
     # - mega2560
 
   libraries:
-    - LiquidCrystal_I2C
+    - LiquidCrystal
