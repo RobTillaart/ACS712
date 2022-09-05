@@ -77,7 +77,7 @@ float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
     while (micros() - start < period)  // UNO ~180 samples...
     {
       int value = analogRead(_pin);
-      if (_noiseDampening)  //  average 2 samples.
+      if (_suppresNoise)  //  average 2 samples.
       {
         value = (value + analogRead(_pin))/2;
       }
@@ -117,7 +117,7 @@ float ACS712::mA_AC(float frequency, uint16_t cycles)
     {
       samples++;
       int value = analogRead(_pin);
-      if (_noiseDampening)  //  average 2 samples.
+      if (_suppresNoise)  //  average 2 samples.
       {
         value = (value + analogRead(_pin))/2;
       }
@@ -171,7 +171,7 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     {
       samples++;
       int value = analogRead(_pin);
-      if (_noiseDampening)  //  average 2 samples.
+      if (_suppresNoise)  //  average 2 samples.
       {
         value = (value + analogRead(_pin))/2;
       }
@@ -198,7 +198,7 @@ float ACS712::mA_DC(uint16_t cycles)
   for (uint16_t i = 0; i < cycles; i++)
   {
     int value = analogRead(_pin);
-    if (_noiseDampening)  //  average 2 samples.
+    if (_suppresNoise)  //  average 2 samples.
     {
       value = (value + analogRead(_pin))/2;
     }
@@ -307,6 +307,12 @@ float ACS712::mVNoiseLevel(float frequency, uint16_t cycles)
   float mA = mA_peak2peak(frequency, cycles);
   //  divide by 2 as the level is half of the peak to peak range
   return mA * _mVperAmpere * 0.001 / 2;   
+}
+
+
+void ACS712::suppressNoise(bool flag)
+{
+  _suppresNoise = flag
 }
 
 

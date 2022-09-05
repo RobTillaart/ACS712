@@ -79,7 +79,10 @@ class ACS712
     //  noise defaults 21 datasheet
     void     setNoisemV(uint8_t noisemV = ACS712_DEFAULT_NOISE);
     uint8_t  getNoisemV();
+    //  enable/disable noiseSuppression for this measurement as needed.
     float    mVNoiseLevel(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);  //  uses mA_peak2peak()
+    void     suppressNoise(bool flag);
+
 
     //  Adjusting resolution AC and DC
     void     setmVperAmp(float mVperAmpere);
@@ -108,7 +111,7 @@ class ACS712
     int       _midPoint;
     uint8_t   _noisemV;
     float     _microsAdjust   = 1.0;  //  0.9986
-    bool      _noiseDampening = true;
+    bool      _suppresNoise = false;
 };
 
 
