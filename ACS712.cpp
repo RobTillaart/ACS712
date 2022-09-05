@@ -312,7 +312,7 @@ float ACS712::mVNoiseLevel(float frequency, uint16_t cycles)
 
 void ACS712::suppressNoise(bool flag)
 {
-  _suppresNoise = flag
+  _suppresNoise = flag;
 }
 
 
