@@ -107,7 +107,8 @@ class ACS712
     float     _mAPerStep;
     int       _midPoint;
     uint8_t   _noisemV;
-    float     _microsAdjust = 1.0;  //  0.9986
+    float     _microsAdjust   = 1.0;  //  0.9986
+    bool      _noiseDampening = true;
 };
 
 

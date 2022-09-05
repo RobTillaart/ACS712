@@ -70,6 +70,7 @@ The library is at least confirmed to work with the following boards:
 | Device       | Voltage | ADC steps |  Notes  |
 |:-------------|:-------:|:---------:|:--------|
 | Arduino UNO  |  5.0V   |   1024    | tested with RobotDyn ACS712 20 A breakout.
+| Arduino UNO  |  5.0V   |   1024    | tested with Open-Smart ACS712 5 A breakout.
 | Arduino NANO |  5.0V   |   1024    | #18
 | ESP32        |  3.3V   |   4096    | #15
 | Promicro     |  5.0V   |   1024    | #15 

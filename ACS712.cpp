@@ -38,6 +38,7 @@
 //                     add debug getMinimum(), getmaximum();
 //                     update Readme.md
 //  0.3.1  2022-09-xx  add float mVNoiseLevel(frequency, cycles)
+//                     add noise dampening in measurement.
 //                     update Readme.md
 
 
@@ -75,10 +76,14 @@ float ACS712::mA_peak2peak(float frequency, uint16_t cycles)
     uint32_t start = micros();
     while (micros() - start < period)  // UNO ~180 samples...
     {
-      int val = analogRead(_pin);
+      int value = analogRead(_pin);
+      if (_noiseDampening)  //  average 2 samples.
+      {
+        value = (value + analogRead(_pin))/2;
+      }
       //  determine extremes
-      if (val < minimum) minimum = val;
-      else if (val > maximum) maximum = val;
+      if (value < minimum) minimum = value;
+      else if (value > maximum) maximum = value;
     }
     sum += (maximum - minimum);
   }
@@ -111,12 +116,16 @@ float ACS712::mA_AC(float frequency, uint16_t cycles)
     while (micros() - start < period)  // UNO ~180 samples...
     {
       samples++;
-      int val = analogRead(_pin);
+      int value = analogRead(_pin);
+      if (_noiseDampening)  //  average 2 samples.
+      {
+        value = (value + analogRead(_pin))/2;
+      }
       //  determine extremes
-      if (val < _min) _min = val;
-      else if (val > _max) _max = val;
+      if (value < _min) _min = value;
+      else if (value > _max) _max = value;
       //  count zeros
-      if (abs(val - _midPoint) <= zeroLevel ) zeros++;
+      if (abs(value - _midPoint) <= zeroLevel ) zeros++;
     }
     int peak2peak = _max - _min;
 
@@ -161,7 +170,12 @@ float ACS712::mA_AC_sampling(float frequency, uint16_t cycles)
     while (micros() - start < period)
     {
       samples++;
-      float current = analogRead(_pin) - _midPoint;
+      int value = analogRead(_pin);
+      if (_noiseDampening)  //  average 2 samples.
+      {
+        value = (value + analogRead(_pin))/2;
+      }
+      float current = value - _midPoint;
       sumSquared += (current * current);
       // if (abs(current) > noiseLevel)
       // {        
@@ -183,7 +197,12 @@ float ACS712::mA_DC(uint16_t cycles)
   float sum = 0;
   for (uint16_t i = 0; i < cycles; i++)
   {
-    sum += (analogRead(_pin) - _midPoint);
+    int value = analogRead(_pin);
+    if (_noiseDampening)  //  average 2 samples.
+    {
+      value = (value + analogRead(_pin))/2;
+    }
+    sum += (value - _midPoint);
   }
   float mA = sum * _mAPerStep / cycles;
   return mA;
