@@ -220,9 +220,7 @@ float ACS712::mA_DC(uint16_t cycles)
 //  CALIBRATION MIDPOINT
 uint16_t ACS712::setMidPoint(uint16_t midPoint)
 {
-  //  TODO - check valid value?
-  //  if (midPoint > _maxADC) return 0xFFFF;
-  _midPoint = midPoint;
+  if (midPoint <= _maxADC) _midPoint = midPoint;
   return _midPoint;
 };
 
