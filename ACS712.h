@@ -68,6 +68,8 @@ class ACS712
     uint16_t decMidPoint();
     //  Auto midPoint, assuming zero DC current or any AC current
     uint16_t autoMidPoint(float frequency = ACS712_DEFAULT_FREQ, uint16_t cycles = 1);
+    //  resets to half maxADC
+    uint16_t resetMidPoint();
 
 
     //  Form Factor is also known as crest factor;
@@ -104,6 +106,7 @@ class ACS712
 
   private:
     uint8_t   _pin;
+    uint16_t  _maxADC;
     float     _mVperStep;
     float     _formFactor;    //  peak2peak -> RMS
     float     _mVperAmpere;

@@ -163,6 +163,7 @@ This function is mandatory for measuring AC.
 - **uint16_t getMidPoint()** read the value set / determined.
 - **uint16_t incMidPoint()** manual increase midpoint, e.g. useful in an interactive application.
 - **uint16_t decMidPoint()** manual decrease midpoint.
+- **uint16_t resetMidPoint()** resets the midPoint to the initial value of maxADC /2 as given in the constructor.
 
 Since version 0.3.0 there is another way to determine the midPoint.
 One can use the two debug functions (milliseconds at least a full cycle)

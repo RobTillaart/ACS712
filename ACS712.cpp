@@ -40,6 +40,7 @@
 //  0.3.1  2022-09-xx  add float mVNoiseLevel(frequency, cycles)
 //                     add noise dampening in measurement (average two samples).
 //                     update readme.md
+//                     add resetMidPoint()
 
 
 #include "ACS712.h"
@@ -49,6 +50,7 @@
 ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmpere)
 {
   _pin         = analogPin;
+  _maxADC      = maxADC;
   _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
   _mVperAmpere = mVperAmpere;
   _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
@@ -276,6 +278,13 @@ uint16_t ACS712::autoMidPoint(float frequency, uint16_t cycles)
 }
 
 
+uint16_t ACS712::resetMidPoint()
+{
+  _midPoint = _maxADC / 2;
+  return _midPoint;
+};
+
+
 //  CALIBRATION FORM FACTOR
 void ACS712::setFormFactor(float formFactor)
 {
@@ -373,13 +382,14 @@ float ACS712::detectFrequency(float minimalFrequency)
   //  to prevent endless loop a timeout is checked.
   timeOut *= 10;
   start = micros();
-  while ((analogRead(_pin) >  Q1) && ((micros() - start) < timeOut));
-  while ((analogRead(_pin) <= Q3) && ((micros() - start) < timeOut));
+  //  casting to int to keep compiler happy.
+  while ((int(analogRead(_pin)) >  Q1) && ((micros() - start) < timeOut));
+  while ((int(analogRead(_pin)) <= Q3) && ((micros() - start) < timeOut));
   start = micros();
   for (int i = 0; i < 10; i++)
   {
-    while ((analogRead(_pin) >  Q1) && ((micros() - start) < timeOut));
-    while ((analogRead(_pin) <= Q3) && ((micros() - start) < timeOut));
+    while ((int(analogRead(_pin)) >  Q1) && ((micros() - start) < timeOut));
+    while ((int(analogRead(_pin)) <= Q3) && ((micros() - start) < timeOut));
   }
   uint32_t stop = micros();
 
