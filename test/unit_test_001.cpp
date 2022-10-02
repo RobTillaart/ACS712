@@ -130,7 +130,7 @@ unittest(test_midPoint)
   //  test range ends
   ACS.setMidPoint(1023);
   amp = ACS.incMidPoint();
-  assertEqual(1000, amp);
+  assertEqual(1023, amp);
 
   ACS.setMidPoint(0);
   amp = ACS.decMidPoint();
