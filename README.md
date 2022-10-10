@@ -232,11 +232,13 @@ The level will give a (not quantified yet) indication of the accuracy of the mea
 A first order indication can be made by comparing it to voltage / 2 of the constructor.
 
 Noise on the signal can be reduced by using a low pass (RC) filter. 
-Version 0.3.1 includes experimental code to take samples twice and average them.
+Version 0.3.1 includes experimental code to take two sample and average them.
+The idea is that ```((3 + 5)/2)^2   <  (3^2 + 5^2)/2```
+
 In theory this should suppress noise levels however more investigation in
 software noise detection and suppression is needed.
 
-- **void suppressNoise(bool flag)**
+- **void suppressNoise(bool flag)** experimental noise suppression.
 
 
 #### mV per Ampere

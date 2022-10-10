@@ -38,9 +38,12 @@
 //                     add debug getMinimum(), getmaximum();
 //                     update Readme.md
 //  0.3.1  2022-09-xx  add float mVNoiseLevel(frequency, cycles)
-//                     add noise dampening in measurement (average two samples).
+//                     add void suppressNoise(bool flag) 
+//                         experimental suppression by averaging two samples.
 //                     update readme.md
+//                     improve midPoint functions
 //                     add resetMidPoint()
+//                     add RP2040 pico in build-ci
 
 
 #include "ACS712.h"
