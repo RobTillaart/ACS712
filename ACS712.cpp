@@ -197,7 +197,7 @@ uint16_t ACS712::getMidPoint()
 
 uint16_t ACS712::incMidPoint()
 {
-  if (_midPoint < _maxADC) _midPoint += 1;
+  if (_midPoint < (int)(_maxADC)) _midPoint += 1;
   return _midPoint;
 };
 
