@@ -1,9 +1,16 @@
-# Change Log AD520X
+# Change Log ACS712
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+
+## [0.3.3] - 2023-03-01
+- update GitHub actions
+- update license
+- add example
+- add URL in .h .cpp
 
 
 ## [0.3.2] - 2022-11-18
