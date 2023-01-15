@@ -14,16 +14,19 @@
 ACS712::ACS712(uint8_t analogPin, float volts, uint16_t maxADC, float mVperAmpere)
 {
   _pin         = analogPin;
-  _maxADC      = maxADC;
-  _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
   _mVperAmpere = mVperAmpere;
-  _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
   _formFactor  = ACS712_FF_SINUS;
-  _midPoint    = maxADC / 2;
   _noisemV     = ACS712_DEFAULT_NOISE;    //  21mV according to datasheet
 
+  //  set in setADC() 
+  //  keep it here until after experimental.
+  _maxADC      = maxADC;
+  _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
+  _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
+  _midPoint    = maxADC / 2;
+
   //  default ADC is internal.
-  _readADC     = analogRead;
+  setADC(_internalAnalog, volts, maxADC);
 }
 
 
@@ -411,9 +414,14 @@ uint16_t ACS712::getMaximum(uint16_t milliSeconds)
 }
 
 
-void ACS712::setADC(int (* f)(uint8_t))
+void ACS712::setADC(uint16_t (* f)(uint8_t), float volts, uint16_t maxADC)
 {
   _readADC = f;
+
+  _maxADC      = maxADC;
+  _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
+  _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
+  _midPoint    = maxADC / 2;
 }
 
 

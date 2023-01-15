@@ -275,7 +275,7 @@ Current version is experimental and not performance optimized.
 
 #### setADC (experimental 0.3.4)
 
-- **void setADC(int (\*)(uint8_t))** sets the ADC function.
+- **void setADC(int (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and its parameters.
 Defaults the internal **analogRead()**
 
 Be sure to set the parameters of the constructor correctly.

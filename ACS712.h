@@ -106,7 +106,7 @@ class ACS712
 
 
     //  EXPERIMENTAL 0.3.4
-    void setADC(int (*)(uint8_t));
+    void setADC(uint16_t (*)(uint8_t), float volts, uint16_t maxADC);
 
   private:
     uint8_t   _pin;
@@ -121,8 +121,17 @@ class ACS712
     bool      _suppresNoise = false;
 
     //  EXPERIMENTAL 0.3.4
-    int (* _readADC)(uint8_t);
+    //  supports up to 16 bits ADC.
+    uint16_t (* _readADC)(uint8_t);
 };
+
+
+//  wrapper for internal analogRead()
+//  solves platform specific casting.
+static uint16_t _internalAnalog(uint8_t pin)
+{
+  return analogRead(pin);
+}
 
 
 // -- END OF FILE --

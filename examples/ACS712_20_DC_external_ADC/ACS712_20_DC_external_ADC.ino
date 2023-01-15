@@ -28,7 +28,7 @@ void setup()
   Serial.print("ACS712_LIB_VERSION: ");
   Serial.println(ACS712_LIB_VERSION);
 
-  ACS.setADC(testADC);
+  ACS.setADC(testADC, 10, 1023);
   
   //  ACS.autoMidPoint();
   //  Serial.println(ACS.getMidPoint());
@@ -39,15 +39,19 @@ void loop()
 {
   int mA = ACS.mA_DC();
   Serial.println(mA);
-  delay(100);
+  delay(1000);
 }
 
-//  simulation
-int testADC(uint8_t p)
+//  wrapper needed for external analogRead()
+//  as casting behavior is undefined between different function signatures.
+uint16_t testADC(uint8_t p)
 {
-  return 600 + p; // add some noise.
-  //  replace with your external ADC call.
+  //  simulation
+  return 600 + p;
+  //  replace with an external ADC call.
   //  return ADS.readADC(p);
+  //  return analogRead(p + 1);  // use another internal ADC
 }
+
 
 // -- END OF FILE --
