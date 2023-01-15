@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.3.4] - 2023-01-14
 - experimental
 - add **void setADC()** to use an external ADC for measurements.
+- add **static uint16_t internalAnalog(uint8_t p)** wrapping analogRead() - solves casting.
 - add example ACS712_20_DC_external_ADC.ino
 
 

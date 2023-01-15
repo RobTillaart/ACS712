@@ -275,8 +275,14 @@ Current version is experimental and not performance optimized.
 
 #### setADC (experimental 0.3.4)
 
-- **void setADC(int (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and its parameters.
-Defaults the internal **analogRead()**
+- **void setADC(uint16_t (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and its parameters.
+Defaults the internal **analogRead()** by this wrapper in ACS712.h:
+```cpp
+static uint16_t _internalAnalog(uint8_t pin)
+{
+  return analogRead(pin);
+}
+```
 
 Be sure to set the parameters of the constructor correctly.
 
