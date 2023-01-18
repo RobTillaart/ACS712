@@ -123,15 +123,17 @@ class ACS712
     //  EXPERIMENTAL 0.3.4
     //  supports up to 16 bits ADC.
     uint16_t (* _readADC)(uint8_t);
+    uint16_t _analogRead(uint8_t pin);
+    
 };
 
 
 //  wrapper for internal analogRead()
 //  solves platform specific casting.
-static uint16_t _internalAnalog(uint8_t pin)
-{
-  return analogRead(pin);
-}
+// static uint16_t _internalAnalog(uint8_t pin)
+// {
+  // return analogRead(pin);
+// }
 
 
 // -- END OF FILE --
