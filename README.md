@@ -276,24 +276,42 @@ Current version is experimental and not performance optimized.
 #### setADC (experimental 0.3.4)
 
 - **void setADC(uint16_t (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and the parameters of the used ADC.
-The library uses the internal **analogRead()** as default by means of this
-wrapper in ACS712.h:
+The library uses the internal **analogRead()** as default.
+Be sure to set the parameters of the ADC correctly.
+
+The easiest way to implement an external ADC is to make a wrapper function as casting for 
+function pointer is a no go area.
+
 
 ```cpp
-static uint16_t _internalAnalog(uint8_t pin)
+//  set to external ADC - 5 volts 12 bits
+ACS.setADC(myAnalogRead, 5.0, 4096);
+
+...
+
+uint16_t myAnalogRead(uint8_t pin)
 {
-  return analogRead(pin);
+  return MCP.read(pin);  //  assuming MCP is ADC object.
 }
 ```
 
-Be sure to set the parameters of the constructor correctly.
+
+To reset to the internal ADC use **NULL** as function pointer.
+Be sure to set the parameters of the ADC correctly.
+
+```cpp
+//  reset to internal ADC - 5 volts 10 bits
+ACS.setADC(NULL, 5.0, 1023);
+```
 
 - example ACS712_20_DC_external_ADC.ino
 - https://github.com/RobTillaart/ACS712/issues/31
 
+
 Note that the use of an external ADC should meet certain performance requirements, 
 especially for measuring **ma-AC()**.
 To 'catch' the peaks well enough one needs at least 2 samples per millisecond
+for a 60 Hz signal.
 
 The 16 bit I2C **ADS1115** in continuous mode gives max 0.8 samples per millisecond. 
 This will work perfect for high resolution **mA-DC()** but is not fast enough for
