@@ -275,8 +275,10 @@ Current version is experimental and not performance optimized.
 
 #### setADC (experimental 0.3.4)
 
-- **void setADC(uint16_t (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and its parameters.
-Defaults the internal **analogRead()** by this wrapper in ACS712.h:
+- **void setADC(uint16_t (\*)(uint8_t), float volts, uint16_t maxADC)** sets the ADC function and the parameters of the used ADC.
+The library uses the internal **analogRead()** as default by means of this
+wrapper in ACS712.h:
+
 ```cpp
 static uint16_t _internalAnalog(uint8_t pin)
 {
@@ -288,6 +290,20 @@ Be sure to set the parameters of the constructor correctly.
 
 - example ACS712_20_DC_external_ADC.ino
 - https://github.com/RobTillaart/ACS712/issues/31
+
+Note that the use of an external ADC should meet certain performance requirements, 
+especially for measuring **ma-AC()**.
+To 'catch' the peaks well enough one needs at least 2 samples per millisecond
+
+The 16 bit I2C **ADS1115** in continuous mode gives max 0.8 samples per millisecond. 
+This will work perfect for high resolution **mA-DC()** but is not fast enough for
+doing **mA-AC()**.
+
+The SPI based **MCP3202** ao can do up to 100 samples per millisecond at 12 bit. 
+These ADC's are perfect both **mA-DC()** and **mA-AC()**.
+
+- https://github.com/RobTillaart/ADS1X15
+- https://github.com/RobTillaart/MCP_ADC
 
 
 ## Voltage divider
@@ -332,7 +348,8 @@ To detect that the ACS712 is disconnected from the ADC one could connect the
 analog pin via a pull-down to GND. A pull-up to VCC is also possible.
 Choose the solution that fits your project best. (Think safety).
 
-**mA_DC()** and **mA_AC_sampling()** will report HIGH values (Out of range) when the ACS712 is disconnected.
+**mA_DC()** and **mA_AC_sampling()** will report HIGH values (Out of range) when 
+the ACS712 is disconnected.
 The other - peak2peak based functions - will see this as zero current (min == max).
 
 Schema with PULL-UP.
@@ -362,6 +379,7 @@ The examples show the basic working of the functions.
 #### Should - 0.3.x
 
 - investigate noise suppression  #21 (0.3.1 and later)
+- setADC() should be able to reset to internal.
 
 
 #### Could
@@ -377,17 +395,12 @@ The examples show the basic working of the functions.
 - other set functions also a range check?
 - split the readme.md in multiple documents?
   - which?
+- setADC() to support > 16 bit?
+  - uint32_t performance penalty?
 
 
 #### Won't
 
-- external analogue read support? separate class!
-  - after this one stabilized.
-- ACS712X class with external ADC ( 16 or even 24 bit)
-  - keep interface alike?
-  - are these fast enough for e.g. 60 Hz (100 samples in 16 millis?)
-    - **ADS1115** in continuous mode ==> 0.8 samples per millisecond at 16 bit Ideal for **mA-DC()**
-    - **MCP3202** SPI interface ==> up to 100 samples per millisecond !! at 12 bit. Perfect.
 - investigate support for micro-Amperes. **ACS.uA_DC()**
   - need a very stable voltage 
   - needs a 24 bit ADC 
