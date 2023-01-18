@@ -380,6 +380,9 @@ The examples show the basic working of the functions.
 
 - investigate noise suppression  #21 (0.3.1 and later)
 - setADC() should be able to reset to internal.
+- repair build for ESP32 (for now disabled)
+  - unused function is error
+  - https://github.com/Arduino-CI/arduino_ci/issues/345
 
 
 #### Could
