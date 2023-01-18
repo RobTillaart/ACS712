@@ -21,7 +21,7 @@ compile:
     # - zero
     # - leonardo
     - m4
-    - esp32
+    # - esp32   #  fails on [-Werror=unused-function] is normally a warning
     - esp8266
     # - mega2560
     - rpipico

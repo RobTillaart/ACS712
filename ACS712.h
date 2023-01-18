@@ -126,5 +126,13 @@ class ACS712
 };
 
 
+//  wrapper for internal analogRead()
+//  solves platform specific casting.
+static uint16_t _internalAnalog(uint8_t pin)
+{
+  return analogRead(pin);
+}
+
+
 // -- END OF FILE --
 

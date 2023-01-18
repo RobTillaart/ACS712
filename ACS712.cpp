@@ -425,13 +425,5 @@ void ACS712::setADC(uint16_t (* f)(uint8_t), float volts, uint16_t maxADC)
 }
 
 
-//  wrapper for internal analogRead()
-//  solves platform specific casting.
-static uint16_t _internalAnalog(uint8_t pin)
-{
-  return analogRead(pin);
-}
-
-
 // -- END OF FILE --
 
