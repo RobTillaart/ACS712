@@ -242,7 +242,7 @@ uint16_t ACS712::autoMidPoint(float frequency, uint16_t cycles)
     }
     total += (subTotal / samples);
   }
-  _midPoint = (total + (cycles/2))/ cycles;    // rounding.
+  _midPoint = (total + (cycles/2))/ cycles;    //  rounding.
   return _midPoint;
 }
 
@@ -255,7 +255,7 @@ uint16_t ACS712::autoMidPointDC(uint16_t cycles)
   {
     total += analogRead(_pin);
   }
-  _midPoint = (total + (cycles/2))/ cycles;    // rounding.
+  _midPoint = (total + (cycles/2))/ cycles;    //  rounding.
   return _midPoint;
 }
 

@@ -425,6 +425,8 @@ The examples show the basic working of the functions.
   - or remove - depreciate - the worst one
 - add range check to (all) set functions?
 - add unit test for **autoMidPointDC()** (needed?)
+- **setMidPoint()**
+  - Q: could midpoint be set beyond maxADC? is there any use case?
 
 
 #### Won't (unless requested)
