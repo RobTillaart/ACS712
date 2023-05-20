@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.x.x] - 2023-xx-xx
+- update examples.
+- update readme.md (sampling trick #38).
+
+
 ## [0.3.6] - 2023-04-19
 - add **autoMidPointDC(cycles)** see issue #35
 - add rounding to **autoMidPoint()**
