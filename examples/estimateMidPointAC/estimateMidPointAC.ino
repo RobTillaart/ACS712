@@ -70,7 +70,7 @@ void loop()
 {
   count++;
   start = micros();
-  mp = estimateMidPoint(conf, true);
+  mp = estimateMidPointAC(conf, true);
   stop = micros();
   Serial.print(millis());
   Serial.print("\t");
@@ -87,4 +87,3 @@ void loop()
 
 
 //  -- END OF FILE --
-
