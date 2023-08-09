@@ -412,6 +412,16 @@ Schema with PULL-UP.
 The library does not support this "extreme values" detection.
 
 
+## ESPhome
+
+For people who want to use this library for ESPhome, there exists a wrapper 
+class for this ACS712 library.
+- https://github.com/marianomd/acs712-esphome
+
+As I do not have ESPhome know how, please share your experiences.
+This can be done by an issue.
+
+
 ## Operation
 
 The examples show the basic working of the functions.
