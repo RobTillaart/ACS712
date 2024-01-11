@@ -5,9 +5,9 @@
 
 //  see also ACS712_20_DC_external_ADC.ino
 
-#include <Arduino.h>
-#include <ACS712.h>
-#include <ADS1X15.h>
+#include "Arduino.h"
+#include "ACS712.h"
+#include "ADS1X15.h"
 
 
 //  I2C config
