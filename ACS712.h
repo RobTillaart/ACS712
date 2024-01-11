@@ -65,9 +65,9 @@ class ACS712
 
 
     //  returns mA
-    //  blocks < 1 ms (depending on # samples and ADC used)
+    //  blocks < 1 ms (depending on # cycles and ADC used)
     //  does call yield() for RTOS.
-    float    mA_DC(uint16_t samples = 1);
+    float    mA_DC(uint16_t cycles = 1);
 
 
     //  midPoint functions
