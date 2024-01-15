@@ -180,7 +180,10 @@ float ACS712::mA_DC(uint16_t cycles)
       value = (value + _analogRead(_pin))/2;
     }
     //  for RTOS
-    if (i % 2 == 1) yield();
+    if ((i & 0x0001) == 0x0001)  //  every 2nd iteration
+    {
+      yield();
+    }
     sum += (value - _midPoint);
   }
   float mA = sum * _mAPerStep;

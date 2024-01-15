@@ -174,7 +174,7 @@ This function is intended for signals with unknown Form Factor.
 - **float mA_DC(uint16_t samples = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
 A negative value indicates the current flows in the opposite direction.
   - 0.2.8 the parameter samples allow to average over a number of samples.
-  - 0.3.9 calls yield() every 3 analogRead's to support RTOS (a bit).
+  - 0.3.9 calls yield() every 2nd iteration to improve behaviour under RTOS.
 
 
 #### mA_AC_sampling performance trick.

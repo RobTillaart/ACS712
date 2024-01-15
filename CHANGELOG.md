@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.3.9] - 2024-01-11
-- add yield() in multiple reads to better support RTOS
-- update readme.md (empty compatibility table)
+- add yield() to improve the behaviour under RTOS
+- update readme.md (add compatibility table).
 - minor edits
 
 
