@@ -19,7 +19,7 @@
 #define SENSOR_ACS712_ADSPIN    1
 
 
-//  explicit params for demo
+//  explicit parameters for demo
 ADS1015 ads1015(ADS1015_ADDRESS, &Wire);  //  ADS1015 == 12 bit
 
 
