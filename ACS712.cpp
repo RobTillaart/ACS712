@@ -442,6 +442,16 @@ void ACS712::setADC(uint16_t (* f)(uint8_t), float volts, uint16_t maxADC)
   _midPoint    = maxADC / 2;
 }
 
+void ACS712::setADCRaw(uint16_t f, float volts, uint16_t maxADC)
+{
+  _readADCRaw = f;
+
+  _maxADC      = maxADC;
+  _mVperStep   = 1000.0 * volts / maxADC;  //  1x 1000 for V -> mV
+  _mAPerStep   = 1000.0 * _mVperStep / _mVperAmpere;
+  _midPoint    = maxADC / 2;
+}
+
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -451,6 +461,7 @@ uint16_t ACS712::_analogRead(uint8_t pin)
 {
   //  if external ADC is defined use it.
   if (_readADC != NULL) return _readADC(pin);
+  if (_raw) return _readADCRaw;
   return analogRead(pin);
 }
 
