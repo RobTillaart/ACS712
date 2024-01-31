@@ -121,6 +121,8 @@ class ACS712
     //  function returning 16 bit max, with pin or channel as parameter
     void setADC(uint16_t (*)(uint8_t), float volts, uint16_t maxADC);
 
+    // Use raw value as an option
+    void setADCRaw(uint16_t f, float volts, uint16_t maxADC);
 
   private:
     uint8_t   _pin;
