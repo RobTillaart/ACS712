@@ -138,7 +138,10 @@ class ACS712
     //  supports up to 16 bits ADC.
     uint16_t (* _readADC)(uint8_t);
     uint16_t _analogRead(uint8_t pin);
-    
+
+    // Added for raw values
+    bool _raw;
+    uint16_t _readADCRaw;
 };
 
 
