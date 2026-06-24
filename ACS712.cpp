@@ -193,32 +193,43 @@ float ACS712::mA_DC(uint16_t cycles)
 }
 
 
-float ACS712::mA_DC_PWM(uint16_t cycles, float threshold)
+float ACS712::mA_DC_PWM(float threshold, uint16_t cycles = 1)
 {
+  uint32_t start = millis();
+  uint32_t maxTime = 100;   //  ms
+
   if (cycles == 0) cycles = 1;
   float sum = 0.0;
   uint32_t count = 0;
   float value = 0;
   
   //  wait for LOW
-  while (acs.mA_DC() < threshold);  //  assumption zero noise is way below threshold
+  while (mA_DC() < threshold)  //  assumption zero noise is way below threshold
+  {
+    if (millis() - start > maxTime) return 0;
+  }
   //  wait for HIGH
-  while (acs.mA_DC() >= threshold);
+  while (mA_DC() >= threshold)
+  {
+    if (millis() - start > maxTime) return 0;
+  }
 
   for (int i = 0; i < cycles; i++)
   {
     //  while LOW we have effectively zero Amps, 
     //  ==> add nothing to sum.
-    while ((value = acs.mA_DC()) < threshold)
+    while ((value = mA_DC()) < threshold)
     {
       //  sum += value; not added as expect value is zero.
       count++;  //  count zero levels
+      if (millis() - start > maxTime) return 0;
     }
     //  while HIGH we must add to sum.
-    while ((value = acs.mA_DC()) >= threshold)
+    while ((value = mA_DC()) >= threshold)
     {
       sum += value;
       count++;  //  count HIGH levels.
+      if (millis() - start > maxTime) return 0;
     }
   }
   return sum / count;

@@ -73,7 +73,7 @@ class ACS712
     //  returns mA
     //  blocks < 1 ms (depending on # cycles and ADC used)
     //  does call yield() for RTOS.
-    float mA_DC_PWM(uint16_t cycles = 1);
+    float mA_DC_PWM(float threshold, uint16_t cycles = 1);
 
 
     //  midPoint functions

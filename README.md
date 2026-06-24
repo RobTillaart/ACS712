@@ -186,7 +186,7 @@ A negative value indicates the current flows in the opposite direction.
 
 #### Experimental 0.4.1
 
-Experimental function to read the average DC current of a PWM signal.
+**Experimental function** to read the average DC current of a PWM signal.
 
 - **float mA_DC_PWM(float threshold, uint16_t cycles = 1)** See #58
 This function averages a number of whole cycles (LOW and HIGH part) of a PWM signal.
@@ -194,6 +194,9 @@ The default number of cycles is 1.
 To discriminate between the two levels the function needs a threshold e.g. 50 mA,
 the user must provide this value.
 Internally the function uses mA_DC() for individual measurements.
+
+Note: this function has a timeout of 100 ms max hard coded.
+
 
 Feedback on this function is welcome.
   
