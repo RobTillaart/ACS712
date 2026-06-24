@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.4.1] 2026-01-02
+- fix #58, add **float mA_DC_PWM(times = 1)**
+- add example
+- minor edits
+
+
 ## [0.4.0] 2026-01-02
 - update GitHub actions
 - update examples

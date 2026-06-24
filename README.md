@@ -140,6 +140,13 @@ Not tested, but looks compatible - same formula as above
 |  200 A   |     20   |  244.4 mA   |   61.0 mA   |   3.81 mA   |     uni       |
 
 
+### Related
+
+- https://github.com/RobTillaart/AMC1302 - opto isolated current sensor
+- https://github.com/RobTillaart/INA226 - series of current sensors
+- https://github.com/RobTillaart/printHelpers - scientific formatting.
+
+
 ## Interface
 
 ```cpp
@@ -171,11 +178,25 @@ The function returns the AC current in mA. (Note it returns a float).
 Its working is based upon sampling a full period and take the square root of the average sumSquared.
 This function is intended for signals with unknown Form Factor.
   - 0.2.8 the parameter cycles allow to average over a number of cycles.
-- **float mA_DC(uint16_t samples = 1)** blocks < 1 ms (Arduino UNO) as it calls **analogRead()** twice.
+- **float mA_DC(uint16_t cycles = 1)** blocks < 1 ms (Arduino UNO R3) as it calls **analogRead()** twice.
 A negative value indicates the current flows in the opposite direction.
-  - 0.2.8 the parameter samples allow to average over a number of samples.
+  - 0.2.8 the parameter cycles allow to average over a number of samples.
   - 0.3.9 calls yield() every 2nd iteration to improve behaviour under RTOS.
 
+
+#### Experimental 0.4.1
+
+Experimental function to read the average DC current of a PWM signal.
+
+- **float mA_DC_PWM(float threshold, uint16_t cycles = 1)** See #58
+This function averages a number of whole cycles (LOW and HIGH part) of a PWM signal.
+The default number of cycles is 1.
+To discriminate between the two levels the function needs a threshold e.g. 50 mA,
+the user must provide this value.
+Internally the function uses mA_DC() for individual measurements.
+
+Feedback on this function is welcome.
+  
 
 ### mA_AC_sampling performance trick.
 

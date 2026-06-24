@@ -1,7 +1,7 @@
 //
 //    FILE: ACS712.cpp
 //  AUTHOR: Rob Tillaart, Pete Thompson
-// VERSION: 0.4.0
+// VERSION: 0.4.1
 //    DATE: 2020-08-02
 // PURPOSE: ACS712 library - current measurement
 //     URL: https://github.com/RobTillaart/ACS712
@@ -193,32 +193,64 @@ float ACS712::mA_DC(uint16_t cycles)
 }
 
 
+float ACS712::mA_DC_PWM(uint16_t cycles, float threshold)
+{
+  if (cycles == 0) cycles = 1;
+  float sum = 0.0;
+  uint32_t count = 0;
+  float value = 0;
+  
+  //  wait for LOW
+  while (acs.mA_DC() < threshold);  //  assumption zero noise is way below threshold
+  //  wait for HIGH
+  while (acs.mA_DC() >= threshold);
+
+  for (int i = 0; i < cycles; i++)
+  {
+    //  while LOW we have effectively zero Amps, 
+    //  ==> add nothing to sum.
+    while ((value = acs.mA_DC()) < threshold)
+    {
+      //  sum += value; not added as expect value is zero.
+      count++;  //  count zero levels
+    }
+    //  while HIGH we must add to sum.
+    while ((value = acs.mA_DC()) >= threshold)
+    {
+      sum += value;
+      count++;  //  count HIGH levels.
+    }
+  }
+  return sum / count;
+}
+
+
 //  CALIBRATION MIDPOINT
 uint16_t ACS712::setMidPoint(uint16_t midPoint)
 {
   if (midPoint <= _maxADC) _midPoint = (int) midPoint;
   return _midPoint;
-};
+}
 
 
 uint16_t ACS712::getMidPoint()
 {
   return _midPoint;
-};
+}
 
 
 uint16_t ACS712::incMidPoint()
 {
   if (_midPoint < (int)(_maxADC)) _midPoint += 1;
   return _midPoint;
-};
+}
 
 
 uint16_t ACS712::decMidPoint()
 {
   if (_midPoint > 0) _midPoint -= 1;
   return _midPoint;
-};
+}
 
 
 //  configure by sampling for 2 cycles of AC
@@ -269,20 +301,20 @@ uint16_t ACS712::resetMidPoint()
 {
   _midPoint = _maxADC / 2;
   return _midPoint;
-};
+}
 
 
 //  CALIBRATION FORM FACTOR
 void ACS712::setFormFactor(float formFactor)
 {
   _formFactor = formFactor;
-};
+}
 
 
 float ACS712::getFormFactor()
 {
   return _formFactor;
-};
+}
 
 
 //  CALIBRATION NOISE
@@ -290,13 +322,13 @@ float ACS712::getFormFactor()
 void  ACS712::setNoisemV(uint8_t noisemV)
 {
   _noisemV = noisemV;
-};
+}
 
 
 uint8_t ACS712::getNoisemV()
 {
   return _noisemV;
-};
+}
 
 
 float ACS712::mVNoiseLevel(float frequency, uint16_t cycles)
@@ -319,25 +351,25 @@ void ACS712::setmVperAmp(float mVperAmpere)
 {
   _mVperAmpere = mVperAmpere;
   _mAPerStep = 1000.0 * _mVperStep / _mVperAmpere;
-};
+}
 
 
 float ACS712::getmVperAmp()
 {
   return _mVperAmpere;
-};
+}
 
 
 float ACS712::getmAPerStep()
 {
   return _mAPerStep;
-};
+}
 
 
 float ACS712::getAmperePerStep()
 {
   return _mAPerStep * 0.001;
-};
+}
 
 
 //  FREQUENCY DETECTION
@@ -392,13 +424,13 @@ float ACS712::detectFrequency(float minimalFrequency)
 void ACS712::setMicrosAdjust(float factor)
 {
   _microsAdjust = factor;
-};
+}
 
 
 float ACS712::getMicrosAdjust()
 {
   return _microsAdjust;
-};
+}
 
 
 //  DEBUG
