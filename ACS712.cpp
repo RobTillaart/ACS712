@@ -193,7 +193,7 @@ float ACS712::mA_DC(uint16_t cycles)
 }
 
 
-float ACS712::mA_DC_PWM(float threshold, uint16_t cycles = 1)
+float ACS712::mA_DC_PWM(float threshold, uint16_t cycles)
 {
   uint32_t start = millis();
   uint32_t maxTime = 100;   //  ms
