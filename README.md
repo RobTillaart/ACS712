@@ -96,6 +96,20 @@ The library is at least confirmed to work with the following boards:
 Please let me know of other working platforms / processors (and failing ones!).
 
 
+### Sensitivity magnetic fields
+
+The ACS712 (et al) uses a Hall sensor to measure the current.
+The disadvantage is that the ACS712 is sensitive for external magnetic fields.
+See discussion https://forum.arduino.cc/t/unwanted-behaviour-of-acs712-with-arduino-uno-r4-wifi/1449620
+
+Allegro has an application note about this sensitivity.
+https://www.allegromicro.com/-/media/files/application-notes/an26030-managing-external-magnetic-field-interference-acs71x.pdf?sc_lang=en
+
+In practice one might use a different current sensor e.g. an INA226
+or one of the others in the INA series.
+For an incomplete list see - https://github.com/RobTillaart/INA226
+
+
 ## Compatibles
 
 Robodyn has a breakout for the ACS758 - 50 A. - See resolution below.
